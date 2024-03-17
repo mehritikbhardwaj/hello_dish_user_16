@@ -525,11 +525,12 @@ class _ResturantDetailScreenState extends State<ResturantDetailScreen> {
                             controller.createOrder(
                               params,
                               (p0) {
-                                Get.to(const CartCompleteScreen(), arguments: {
-                                  "items": _cartItems,
-                                  "restaurant": widget.restaurant,
-                                  "offer": controller.restaurantOffer
-                                });
+                                Get.to(() => const CartCompleteScreen(),
+                                    arguments: {
+                                      "items": _cartItems,
+                                      "restaurant": widget.restaurant,
+                                      "offer": controller.restaurantOffer
+                                    });
                               },
                             );
                           },

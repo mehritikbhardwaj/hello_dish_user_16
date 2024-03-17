@@ -525,4 +525,23 @@ class HTTPClient {
 
     return OrderModel.fromJson(map);
   }
+
+  static Future<OrderModel> updateOrder(String api, Map? param) async {
+    final url = Uri.parse(api);
+
+    final http.Response res;
+    res = await http.post(url,
+        headers: {
+          'apiusername': 'lbus8830082tree',
+          'apipassword': 'NDU0dDctZmRhajcta2Zkc2ozLWZkYXNr',
+          'Content-type': 'application/json',
+          'Authorization':
+              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ODlhMTMxMGNlN2UzNmE1OTU4YjI1MSIsImlhdCI6MTcwODUzOTA0M30.Ekg_pvZVJSxzki_sZBaJbVr1R3sRDGdNhaofz56EL14',
+        },
+        body: jsonEncode(param));
+
+    final map = jsonDecode(res.body);
+
+    return OrderModel.fromJson(map);
+  }
 }

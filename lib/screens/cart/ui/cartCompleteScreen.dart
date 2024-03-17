@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hello_dish_app/screens/cart/controller/cartCompleteController.dart';
+import 'package:hello_dish_app/screens/cart/model/order_model.dart';
 import 'package:hello_dish_app/screens/cart/ui/offerScreen.dart';
 import 'package:hello_dish_app/screens/cart/ui/orderTrackingScreen.dart';
-import 'package:hello_dish_app/screens/home/models/restaurentDetails.dart';
 import 'package:hello_dish_app/utilities/app_color.dart';
 import 'package:hello_dish_app/utilities/const.dart';
 import 'package:hello_dish_app/utilities/mediaQuery.dart';
@@ -52,7 +52,7 @@ class _CartCompleteScreenState extends State<CartCompleteScreen> {
           child: Row(
             children: [
               Text(
-                "₹ ${cartCompleteController.orderPrice}",
+                "₹ ${cartCompleteController.orderData.value.totalCost}",
                 style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontSize: 18.0,
@@ -85,294 +85,368 @@ class _CartCompleteScreenState extends State<CartCompleteScreen> {
         ).paddingOnly(left: 30.0),
         body: Obx(
           () => SingleChildScrollView(
-            child: Column(
+            child: Stack(
+              alignment: Alignment.center,
               children: [
-                //  HOTEL AND ORDER CONTAINER
-                customContainer(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        cartCompleteController.restaurant.restaurantName,
-                        style: GoogleFonts.poppins(
-                            fontSize: 18.0, fontWeight: FontWeight.bold),
-                      ),
-                      boxA1(),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: cartCompleteController
-                            .orderData.value.orderItems?.length,
-                        itemBuilder: (context, index) {
-                          final item = cartCompleteController
-                              .orderData.value.orderItems?[index];
-                          return _itemRow(item as OrderItem);
-                        },
-                      ),
-                      boxA3(),
-                      customDevider(),
-                      boxA3(),
-                      Row(
-                        children: [
-                          Text(
-                            "31 mins",
-                            style: GoogleFonts.poppins(
-                              fontSize: 16.0,
-                            ),
-                          ),
-                          boxB1(),
-                          Text(
-                            "Delivery to 🏡 Home",
-                            style: GoogleFonts.poppins(color: AppColors.grey),
-                          ),
-                        ],
-                      ),
-                      boxA2(),
-                      TextFormField(
-                        cursorColor: Colors.black,
-                        decoration: const InputDecoration(
-                          hintText: "Add cooking instruction/request",
-                          suffixIcon: Icon(Iconsax.add),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-
-                //  HOTEL AND ORDER CONTAINER END
-                // OFFERS
-                boxA3(),
-                customContainer(
-                    child: Column(
+                Column(
                   children: [
-                    Row(
-                      children: [
-                        Expanded(
-                            flex: 1,
+                    //  HOTEL AND ORDER CONTAINER
+                    cartCompleteController.orderData.value.isBlank != true
+                        ? customContainer(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "${cartCompleteController.offerApplied == null ? cartCompleteController.restaurantOffer?.first.offerCode : cartCompleteController.offerApplied?.offerCode}",
+                                  cartCompleteController
+                                      .restaurant.restaurantName,
                                   style: GoogleFonts.poppins(
                                       fontSize: 18.0,
-                                      fontWeight: FontWeight.w500),
+                                      fontWeight: FontWeight.bold),
                                 ),
-                                Text(
-                                  "Save ₹${cartCompleteController.offerApplied == null ? cartCompleteController.restaurantOffer?.first.upto : cartCompleteController.offerApplied?.upto}",
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 12.0, color: AppColors.grey),
+                                boxA1(),
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: cartCompleteController
+                                      .orderData.value.orderItems?.length,
+                                  itemBuilder: (context, index) {
+                                    final item = cartCompleteController
+                                        .orderData.value.orderItems?[index];
+                                    final oldData =
+                                        cartCompleteController.orderData.value;
+                                    return _itemRow(item, () {
+                                      // PLUS ACTION
+                                      // item?.quantity = (item.quantity! + 1);
+
+                                      // var items = [{}];
+                                      // for (var element in oldData.orderItems!) {
+                                      //   items.add(element.toJson());
+                                      // }
+
+                                      // items.removeWhere(
+                                      //     (element) => element == {});
+                                      // final params = {
+                                      //   "orderId": oldData.sId,
+                                      //   "paymentType":
+                                      //       oldData.paymentType, //prepayment
+                                      //   "orderPrice": oldData.orderPrice,
+                                      //   "orderItems": items,
+                                      //   "restaurantId": cartCompleteController
+                                      //       .restaurant.id,
+                                      //   "customerLocationId":
+                                      //       "65ce7574529c5188a259d544",
+                                      //   "lat": 22.7533,
+                                      //   "long": 75.8937,
+                                      //   "status": 0,
+                                      //   "offer": cartCompleteController
+                                      //           .offerApplied?.offerCode ??
+                                      //       ""
+                                      // };
+
+                                      // print("params: $params");
+                                      // cartCompleteController
+                                      //     .updateOrder(params);
+                                    }, () {
+                                      // MINUS ACTION
+                                      // if (item != null) {
+                                      //   if (item.quantity! > 1) {
+                                      //     item.quantity = (item.quantity! - 1);
+
+                                      //     final params = cartCompleteController
+                                      //         .orderData.value
+                                      //         .toJson();
+
+                                      //     cartCompleteController
+                                      //         .updateOrder(params);
+                                      //   }
+                                      // }
+                                    });
+                                  },
                                 ),
+                                boxA3(),
+                                customDevider(),
+                                boxA3(),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "31 mins",
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 16.0,
+                                      ),
+                                    ),
+                                    boxB1(),
+                                    Text(
+                                      "Delivery to 🏡 Home",
+                                      style: GoogleFonts.poppins(
+                                          color: AppColors.grey),
+                                    ),
+                                  ],
+                                ),
+                                boxA2(),
+                                TextFormField(
+                                  cursorColor: Colors.black,
+                                  decoration: const InputDecoration(
+                                    hintText: "Add cooking instruction/request",
+                                    suffixIcon: Icon(Iconsax.add),
+                                  ),
+                                )
                               ],
-                            )),
-                        GestureDetector(
-                          onTap: () {
-                            if (cartCompleteController.offerApplied == null) {
-                              cartCompleteController.offerApplied =
-                                  cartCompleteController.restaurantOffer?.first;
-                            } else {
-                              cartCompleteController.offerApplied = null;
-                            }
-                            setState(() {});
-                          },
-                          child: Text(
-                            cartCompleteController.offerApplied != null
-                                ? "Remove"
-                                : "Apply",
-                            style: GoogleFonts.poppins(
-                                color: AppColors.theme,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                      ],
-                    ),
-                    boxA1(),
-                    customDevider(),
-                    boxA1(),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context)
-                            .push(
-                          MaterialPageRoute(
-                            builder: (_) => OfferScreen(
-                              cartCompleteController: cartCompleteController,
                             ),
-                          ),
-                        )
-                            .then((val) {
-                          print("val--------------------");
-                          setState(() {});
-                        });
+                          )
+                        : const SizedBox.shrink(),
 
-                        // Get.to(
-                        //   () => OfferScreen(
-                        //     cartCompleteController: cartCompleteController,
-                        //   ),
-                        // )?.then((value) => (value) {
-                        //       print("insede callnback");
-                        //       setState(() {});
-                        //     });
-                      },
-                      child: Text(
-                        "View more coupons  >",
-                        style: GoogleFonts.poppins(color: AppColors.grey),
-                      ),
-                    )
-                  ],
-                )),
-                // OFFERS END
-                // PAYMENT METHOD
-                boxA3(),
-                customContainer(
-                  padding: const EdgeInsets.only(
-                      top: 18.0, bottom: 18.0, right: 12.0, left: 12.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      customContainer(
-                        padding: const EdgeInsets.only(
-                            top: 9.0, bottom: 9.0, right: 24.0, left: 24.0),
-                        bgColor: cartCompleteController.paymentType.value
-                            ? AppColors.backgroundblueColour
-                            : AppColors.theme,
-                        onTap: () {
-                          cartCompleteController.paymentMethod();
-                        },
-                        child: Text("Online",
-                            style: GoogleFonts.poppins(
-                                color: cartCompleteController.paymentType.value
-                                    ? Colors.black
-                                    : Colors.white)),
-                      ),
-                      customContainer(
-                        padding: const EdgeInsets.only(
-                            top: 9.0, bottom: 9.0, right: 24.0, left: 24.0),
-                        bgColor: cartCompleteController.paymentType.value
-                            ? AppColors.theme
-                            : AppColors.backgroundblueColour,
-                        onTap: () {
-                          cartCompleteController.paymentMethod();
-                        },
-                        child: Text(
-                          "Cash On Delivery",
-                          style: GoogleFonts.poppins(
-                              color: cartCompleteController.paymentType.value
-                                  ? Colors.white
-                                  : Colors.black),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // PAYMENT METHOD END
-                // BILL DETAILS
-                boxA3(),
-
-                customContainer(
-                    child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //  HOTEL AND ORDER CONTAINER END
+                    // OFFERS
+                    boxA3(),
+                    customContainer(
+                        child: Column(
                       children: [
-                        Text(
-                          "Item Total",
-                          style: GoogleFonts.poppins(color: AppColors.grey),
-                        ),
-                        const Text("₹200")
-                      ],
-                    ),
-                    boxA2(),
-                    customDevider(),
-                    boxA2(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Delivery Charge",
-                          style: GoogleFonts.poppins(color: AppColors.grey),
-                        ),
                         Row(
                           children: [
-                            Text(
-                              "₹200",
-                              style: GoogleFonts.poppins(
-                                  decoration: TextDecoration.lineThrough),
-                            ),
-                            Text(
-                              " FREE",
-                              style: GoogleFonts.poppins(
-                                  color: AppColors.greenGradient),
+                            Expanded(
+                                flex: 1,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "${cartCompleteController.offerApplied == null ? cartCompleteController.restaurantOffer?.first.offerCode : cartCompleteController.offerApplied?.offerCode}",
+                                      style: GoogleFonts.poppins(
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    Text(
+                                      "Save ₹${cartCompleteController.offerApplied == null ? cartCompleteController.restaurantOffer?.first.upto : cartCompleteController.offerApplied?.upto}",
+                                      style: GoogleFonts.poppins(
+                                          fontSize: 12.0,
+                                          color: AppColors.grey),
+                                    ),
+                                  ],
+                                )),
+                            GestureDetector(
+                              onTap: () {
+                                if (cartCompleteController.offerApplied ==
+                                    null) {
+                                  cartCompleteController.offerApplied =
+                                      cartCompleteController
+                                          .restaurantOffer?.first;
+                                } else {
+                                  cartCompleteController.offerApplied = null;
+                                }
+                                setState(() {});
+                              },
+                              child: Text(
+                                cartCompleteController.offerApplied != null
+                                    ? "Remove"
+                                    : "Apply",
+                                style: GoogleFonts.poppins(
+                                    color: AppColors.theme,
+                                    fontWeight: FontWeight.w500),
+                              ),
                             ),
                           ],
+                        ),
+                        boxA1(),
+                        customDevider(),
+                        boxA1(),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context)
+                                .push(
+                              MaterialPageRoute(
+                                builder: (_) => OfferScreen(
+                                  cartCompleteController:
+                                      cartCompleteController,
+                                ),
+                              ),
+                            )
+                                .then((val) {
+                              print("val--------------------");
+                              setState(() {});
+                            });
+
+                            // Get.to(
+                            //   () => OfferScreen(
+                            //     cartCompleteController: cartCompleteController,
+                            //   ),
+                            // )?.then((value) => (value) {
+                            //       print("insede callnback");
+                            //       setState(() {});
+                            //     });
+                          },
+                          child: Text(
+                            "View more coupons  >",
+                            style: GoogleFonts.poppins(color: AppColors.grey),
+                          ),
                         )
                       ],
+                    )),
+                    // OFFERS END
+                    // PAYMENT METHOD
+                    boxA3(),
+                    customContainer(
+                      padding: const EdgeInsets.only(
+                          top: 18.0, bottom: 18.0, right: 12.0, left: 12.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          customContainer(
+                            padding: const EdgeInsets.only(
+                                top: 9.0, bottom: 9.0, right: 24.0, left: 24.0),
+                            bgColor: cartCompleteController.paymentType.value
+                                ? AppColors.backgroundblueColour
+                                : AppColors.theme,
+                            onTap: () {
+                              cartCompleteController.paymentMethod();
+                            },
+                            child: Text("Online",
+                                style: GoogleFonts.poppins(
+                                    color:
+                                        cartCompleteController.paymentType.value
+                                            ? Colors.black
+                                            : Colors.white)),
+                          ),
+                          customContainer(
+                            padding: const EdgeInsets.only(
+                                top: 9.0, bottom: 9.0, right: 24.0, left: 24.0),
+                            bgColor: cartCompleteController.paymentType.value
+                                ? AppColors.theme
+                                : AppColors.backgroundblueColour,
+                            onTap: () {
+                              cartCompleteController.paymentMethod();
+                            },
+                            child: Text(
+                              "Cash On Delivery",
+                              style: GoogleFonts.poppins(
+                                  color:
+                                      cartCompleteController.paymentType.value
+                                          ? Colors.white
+                                          : Colors.black),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    boxA1(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    // PAYMENT METHOD END
+                    // BILL DETAILS
+                    boxA3(),
+
+                    customContainer(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "Restaurant GST",
-                          style: GoogleFonts.poppins(color: AppColors.grey),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Item Total",
+                              style: GoogleFonts.poppins(color: AppColors.grey),
+                            ),
+                            Text(
+                                "${cartCompleteController.orderData.value.orderPrice}")
+                          ],
                         ),
-                        const Text("₹11.00")
-                      ],
-                    ),
-                    boxA1(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Restaurant Packing",
-                          style: GoogleFonts.poppins(color: AppColors.grey),
+                        boxA2(),
+                        customDevider(),
+                        boxA2(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Delivery Charge",
+                              style: GoogleFonts.poppins(color: AppColors.grey),
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  "₹${cartCompleteController.orderData.value.deliveryCharge}",
+                                  style: GoogleFonts.poppins(
+                                      decoration: TextDecoration.lineThrough),
+                                ),
+                                Text(
+                                  " FREE",
+                                  style: GoogleFonts.poppins(
+                                      color: AppColors.greenGradient),
+                                ),
+                              ],
+                            )
+                          ],
                         ),
-                        const Text("₹00.30")
-                      ],
-                    ),
-                    boxA2(),
-                    customDevider(),
-                    boxA2(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "TO PAY",
-                          style: GoogleFonts.poppins(
-                              fontSize: 18.0, fontWeight: FontWeight.w500),
+                        boxA1(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Restaurant GST",
+                              style: GoogleFonts.poppins(color: AppColors.grey),
+                            ),
+                            Text(
+                                "₹${cartCompleteController.orderData.value.gstCharge}")
+                          ],
                         ),
-                        Text(
-                          "₹ 211.30",
-                          style: GoogleFonts.poppins(
-                              fontSize: 18.0, fontWeight: FontWeight.w500),
-                        )
+                        boxA1(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Restaurant Packing",
+                              style: GoogleFonts.poppins(color: AppColors.grey),
+                            ),
+                            Text(
+                                "₹${cartCompleteController.orderData.value.packingCharge}")
+                          ],
+                        ),
+                        boxA2(),
+                        customDevider(),
+                        boxA2(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "TO PAY",
+                              style: GoogleFonts.poppins(
+                                  fontSize: 18.0, fontWeight: FontWeight.w500),
+                            ),
+                            Text(
+                              "₹ ${cartCompleteController.orderData.value.totalCost}",
+                              style: GoogleFonts.poppins(
+                                  fontSize: 18.0, fontWeight: FontWeight.w500),
+                            )
+                          ],
+                        ),
                       ],
-                    ),
+                    )),
+                    SizedBox(
+                      height: SizeConfig.Height * 0.1,
+                    )
                   ],
-                )),
-                SizedBox(
-                  height: SizeConfig.Height * 0.1,
-                )
+                ).paddingAll(18.0),
+                cartCompleteController.isLoading.isTrue
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.orangeGradient,
+                        ),
+                      )
+                    : const SizedBox.shrink()
               ],
-            ).paddingAll(18.0),
+            ),
           ),
         ),
       );
     });
   }
 
-  Row _itemRow(OrderItem item) {
+  Row _itemRow(OrderItems? item, Function onTapPlus, Function onTapMinus) {
     return Row(
       children: [
         Text(
-          item.item,
+          item?.item ?? "",
           style: GoogleFonts.poppins(
             fontSize: 16.0,
           ),
         ),
         boxB1(),
         Text(
-          "₹ ${item.price}",
+          "₹ ${item?.price}",
           style: GoogleFonts.poppins(
             color: AppColors.grey,
             fontSize: 16.0,
@@ -386,21 +460,31 @@ class _CartCompleteScreenState extends State<CartCompleteScreen> {
             bgColor: AppColors.greenGradient,
             child: Row(
               children: [
-                const Icon(
-                  Iconsax.minus,
-                  color: Colors.white,
+                GestureDetector(
+                  onTap: () {
+                    onTapMinus();
+                  },
+                  child: const Icon(
+                    Iconsax.minus,
+                    color: Colors.white,
+                  ),
                 ),
                 boxB2(),
                 Text(
-                  "${item.quantity}",
+                  "${item?.quantity}",
                   style: GoogleFonts.poppins(
                     color: Colors.white,
                   ),
                 ),
                 boxB2(),
-                const Icon(
-                  Iconsax.add,
-                  color: Colors.white,
+                GestureDetector(
+                  onTap: () {
+                    onTapPlus();
+                  },
+                  child: const Icon(
+                    Iconsax.add,
+                    color: Colors.white,
+                  ),
                 ),
               ],
             ))

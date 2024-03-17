@@ -25,7 +25,7 @@ class CartCompleteController extends GetxController {
 
     restaurant = Get.arguments["restaurant"] as Restaurant;
     restaurantOffer = Get.arguments["offer"] as List<RestaurantOffer>;
-    getCartItem();
+    // getCartItem();
     // orderData = Get.arguments["orderData"] as CreateOrderData;
     super.onInit();
   }
@@ -42,6 +42,21 @@ class CartCompleteController extends GetxController {
       var res = await HTTPClient.getCartItem(url);
       if (res.data != null) {
         orderData(res.data?[0]);
+        update();
+      } else {}
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  void updateOrder(Map param) async {
+    const url = APIs.updateOrder;
+    try {
+      isLoading(true);
+      var res = await HTTPClient.updateOrder(url, param);
+      if (res.data != null) {
+        orderData(res.data?[0]);
+        update();
       } else {}
     } finally {
       isLoading(false);

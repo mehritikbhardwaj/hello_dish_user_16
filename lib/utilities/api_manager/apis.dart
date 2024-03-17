@@ -12,6 +12,7 @@ class APIs {
   static const restDetails = "${base}customer/api/getRestaurantDetailById";
   static const createOrder = "${base}customer/api/createOrder";
   static const getCartItem = "${base}customer/api/getCartItem/";
+  static const updateOrder = "${base}customer/api/updateOrder";
 
   /// Cart
 }
