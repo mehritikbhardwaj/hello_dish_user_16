@@ -1,3 +1,5 @@
+var isList = true;
+
 class OrderModel {
   bool? status;
   List<OrderData>? data;
@@ -6,11 +8,18 @@ class OrderModel {
 
   OrderModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
-    if (json['data'] != null) {
+    if (isList) {
+      if (json['data'] != null) {
+        data = <OrderData>[];
+        json['data'].forEach((v) {
+          data!.add(OrderData.fromJson(v));
+        });
+      }
+    } else {
+      final obj = OrderData.fromJson(json['data'] as Map<String, dynamic>);
       data = <OrderData>[];
-      json['data'].forEach((v) {
-        data!.add(OrderData.fromJson(v));
-      });
+      data!.add(obj);
+      isList = true;
     }
   }
 
@@ -19,6 +28,8 @@ class OrderModel {
     data['status'] = status;
     if (this.data != null) {
       data['data'] = this.data!.map((v) => v.toJson()).toList();
+    } else {
+      data['data'] = this.data;
     }
     return data;
   }
@@ -28,20 +39,20 @@ class OrderData {
   Location? location;
   String? sId;
   String? customerId;
-  CustomerLocationId? customerLocationId;
+  // String? customerLocationId;
   String? offer;
   List<OrderItems>? orderItems;
-  int? orderPrice;
+  dynamic orderPrice;
   String? paymentType;
-  int? foodPrepStatus;
+  dynamic foodPrepStatus;
   int? driverAcceptStatus;
   int? cancelStatus;
   int? status;
-  int? discountAmount;
-  int? deliveryCharge;
-  int? gstCharge;
-  int? totalCost;
-  int? packingCharge;
+  dynamic discountAmount;
+  dynamic deliveryCharge;
+  dynamic gstCharge;
+  dynamic totalCost;
+  dynamic packingCharge;
   double? lat;
   double? long;
   int? restaurnatRating;
@@ -57,7 +68,7 @@ class OrderData {
       {this.location,
       this.sId,
       this.customerId,
-      this.customerLocationId,
+      // this.customerLocationId,
       this.offer,
       this.orderItems,
       this.orderPrice,
@@ -87,9 +98,10 @@ class OrderData {
         json['location'] != null ? Location.fromJson(json['location']) : null;
     sId = json['_id'];
     customerId = json['customerId'];
-    customerLocationId = json['customerLocationId'] != null
-        ? CustomerLocationId.fromJson(json['customerLocationId'])
-        : null;
+    // customerLocationId = json['customerLocationId'];
+    // customerLocationId = json['customerLocationId'] != null
+    //     ? CustomerLocationId.fromJson(json['customerLocationId'])
+    //     : null;
     offer = json['offer'];
     if (json['orderItems'] != null) {
       orderItems = <OrderItems>[];
@@ -127,9 +139,10 @@ class OrderData {
     }
     data['_id'] = sId;
     data['customerId'] = customerId;
-    if (customerLocationId != null) {
-      data['customerLocationId'] = customerLocationId!.toJson();
-    }
+    // data['customerLocationId'] = customerLocationId;
+    // if (customerLocationId != null) {
+    //   data['customerLocationId'] = customerLocationId!.toJson();
+    // }
     data['offer'] = offer;
     if (orderItems != null) {
       data['orderItems'] = orderItems!.map((v) => v.toJson()).toList();

@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:hello_dish_app/screens/cart/model/order_model.dart';
+import 'package:hello_dish_app/screens/cart/ui/orderTrackingScreen.dart';
 import 'package:hello_dish_app/screens/home/models/homeModel.dart';
 import 'package:hello_dish_app/utilities/api_manager/apis.dart';
 import 'package:hello_dish_app/utilities/api_manager/http_client.dart';
@@ -25,7 +26,7 @@ class CartCompleteController extends GetxController {
 
     restaurant = Get.arguments["restaurant"] as Restaurant;
     restaurantOffer = Get.arguments["offer"] as List<RestaurantOffer>;
-    // getCartItem();
+    getCartItem();
     // orderData = Get.arguments["orderData"] as CreateOrderData;
     super.onInit();
   }
@@ -56,6 +57,10 @@ class CartCompleteController extends GetxController {
       var res = await HTTPClient.updateOrder(url, param);
       if (res.data != null) {
         orderData(res.data?[0]);
+
+        if (res.data?[0].status == 1) {
+          Get.to(() => OrderTrackingScreen());
+        }
         update();
       } else {}
     } finally {

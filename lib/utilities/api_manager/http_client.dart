@@ -530,7 +530,7 @@ class HTTPClient {
     final url = Uri.parse(api);
 
     final http.Response res;
-    res = await http.post(url,
+    res = await http.put(url,
         headers: {
           'apiusername': 'lbus8830082tree',
           'apipassword': 'NDU0dDctZmRhajcta2Zkc2ozLWZkYXNr',
@@ -541,7 +541,7 @@ class HTTPClient {
         body: jsonEncode(param));
 
     final map = jsonDecode(res.body);
-
+    isList = false;
     return OrderModel.fromJson(map);
   }
 }
