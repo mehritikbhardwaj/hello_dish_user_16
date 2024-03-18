@@ -39,14 +39,18 @@ class HTTPClient {
         "-------------------------------------------- PARAMETERS --------------------------------------------");
     Get.log("params: $params");
 
-    res = await http
-        .post(url, body: type == "raw" ? jsonEncode(params) : params, headers: {
-      // 'apiusername': APIs.apiUserName,
-      // 'apipassword': APIs.apipassword,
-      'Content-type': type == "raw"
-          ? 'application/json'
-          : "application/x-www-form-urlencoded",
-    });
+    var token = SharedPref.shared.pref!.getString(PrefKeys.token)! ?? "";
+
+    res = await http.post(
+      url,
+      body: type == "raw" ? jsonEncode(params) : params,
+      headers: {
+        'apiusername': 'lbus8830082tree',
+        'apipassword': 'NDU0dDctZmRhajcta2Zkc2ozLWZkYXNr',
+        'Content-type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
 
     // Get.log("userId $userid");
     // Get.log("userId  $sCode");
@@ -559,5 +563,48 @@ class HTTPClient {
     final map = jsonDecode(res.body);
     isList = false;
     return OrderModel.fromJson(map);
+  }
+
+  static Future<dynamic> deleteAddress(
+    String api,
+  ) async {
+    final url = Uri.parse(api);
+
+    final http.Response res;
+    var token = SharedPref.shared.pref!.getString(PrefKeys.token)! ?? "";
+
+    res = await http.delete(
+      url,
+      headers: {
+        'apiusername': 'lbus8830082tree',
+        'apipassword': 'NDU0dDctZmRhajcta2Zkc2ozLWZkYXNr',
+        'Content-type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    final map = jsonDecode(res.body);
+
+    return map;
+  }
+
+  static Future<dynamic> updateAddress(String api, Map param) async {
+    final url = Uri.parse(api);
+
+    final http.Response res;
+    var token = SharedPref.shared.pref!.getString(PrefKeys.token)! ?? "";
+
+    res = await http.put(url,
+        headers: {
+          'apiusername': 'lbus8830082tree',
+          'apipassword': 'NDU0dDctZmRhajcta2Zkc2ozLWZkYXNr',
+          'Content-type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(param));
+
+    final map = jsonDecode(res.body);
+
+    return map;
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,8 +13,6 @@ import 'package:iconsax/iconsax.dart';
 
 import '../../../utilities/mediaQuery.dart';
 import '../cards/cuisineCard.dart';
-import '../cards/foodCategoryCard.dart';
-import '../cards/popularFoodCard.dart';
 import '../cards/restaurantsCard.dart';
 import '../models/homeModel.dart';
 
@@ -50,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     List<SubCategoryItem> subCategoryItems = controller.subCategoryList;
 
-    String _getImage(String category) {
+    String getImage(String category) {
       switch (category.toLowerCase()) {
         case 'good for breakfast':
           return 'https://media-assets.swiggy.com/swiggy/image/upload/f_auto,q_auto,fl_lossy/xyuu2wdu9l2pnj83ka3m';
@@ -73,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }
 
-    Color _getColorForSubCategory(String category) {
+    Color getColorForSubCategory(String category) {
       switch (category.toLowerCase()) {
         case 'good for breakfast':
           return AppColors.redGradient;
@@ -96,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }
 
-    String _getIcon(String category) {
+    String getIcon(String category) {
       switch (category.toLowerCase()) {
         case 'good for breakfast':
           return '🍞';
@@ -122,35 +118,35 @@ class _HomeScreenState extends State<HomeScreen> {
     return GetBuilder<HomeController>(
         builder: (c) => Scaffold(
               appBar: AppBar(
-                title: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          controller.name.value,
-                          style: GoogleFonts.poppins(
-                            fontSize: 18.0,
+                title: GestureDetector(
+                  onTap: () {
+                    Get.to(const AddressListScreen());
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            controller.name.value,
+                            style: GoogleFonts.poppins(
+                              fontSize: 18.0,
+                            ),
                           ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            Get.to(const AddressListScreen());
-                          },
-                          child: const Icon(
+                          const Icon(
                             Iconsax.arrow_down_1,
                             size: 16.0,
-                          ).paddingOnly(left: 6.0),
-                        )
-                      ],
-                    ),
-                    Text(
-                      controller.area.value,
-                      style: GoogleFonts.poppins(
-                        fontSize: 12.0,
+                          ).paddingOnly(left: 6.0)
+                        ],
                       ),
-                    ).paddingOnly(top: 3.0),
-                  ],
+                      Text(
+                        controller.area.value,
+                        style: GoogleFonts.poppins(
+                          fontSize: 12.0,
+                        ),
+                      ).paddingOnly(top: 3.0),
+                    ],
+                  ),
                 ),
                 // actions: [const Icon(Iconsax.notification).paddingAll(18.0)]
               ),
@@ -263,9 +259,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: SizeConfig.Height * 0.36,
                           child: cuisinesCard(
                             cuisineTitle:
-                                '${subCategoryItem.subCategory.name}  ${_getIcon(subCategoryItem.subCategory.name)}',
-                            img: _getImage(subCategoryItem.subCategory.name),
-                            color: _getColorForSubCategory(
+                                '${subCategoryItem.subCategory.name}  ${getIcon(subCategoryItem.subCategory.name)}',
+                            img: getImage(subCategoryItem.subCategory.name),
+                            color: getColorForSubCategory(
                                 subCategoryItem.subCategory.name),
                             restaurants: subCategoryItem.restaurants,
                           ),

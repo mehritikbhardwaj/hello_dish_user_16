@@ -15,5 +15,7 @@ class APIs {
   static const getCartItem = "${base}customer/api/getCartItem/";
   static const updateOrder = "${base}customer/api/updateOrder";
 
-  /// Cart
+  static const addLocation = "${base}customer/api/addLocation";
+  static const deleteLocation = "${base}customer/api/deleteLocation/";
+  static const updateLocation = "${base}customer/api/updateLocation/";
 }

@@ -43,7 +43,7 @@ class HomeController extends GetxController {
       var offers =
           await HTTPClient.getLocationnList("${APIs.getLocation}?keyword=$key");
       print(offers.toJson());
-      locationList.value = offers.location;
+      locationList(offers.location);
     } finally {
       isLoading(false);
       update();
@@ -152,5 +152,50 @@ class HomeController extends GetxController {
     };
 
     return stateAbbreviationMap[administrativeArea] ?? 'Unknown';
+  }
+
+  addNewAddress(Map params, Function(bool) completion) async {
+    try {
+      isLoading(true);
+      final res = await HTTPClient.postRequest(APIs.addLocation, params);
+      if (res["success"] == true) {
+        completion(true);
+      } else {
+        completion(false);
+      }
+      Get.rawSnackbar(message: res["message"]);
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  deleteAddress(String id) async {
+    final api = "${APIs.deleteLocation}$id";
+    try {
+      isLoading(true);
+      final res = await HTTPClient.deleteAddress(api);
+      if (res["success"] == true) {
+        getLocationList("");
+      } else {}
+      Get.rawSnackbar(message: res["message"]);
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  updateAddress(String id, Map params, Function(bool) completion) async {
+    final api = "${APIs.updateLocation}$id";
+    try {
+      isLoading(true);
+      final res = await HTTPClient.updateAddress(api, params);
+      if (res["success"] == true) {
+        completion(true);
+      } else {
+        completion(false);
+      }
+      Get.rawSnackbar(message: res["message"]);
+    } finally {
+      isLoading(false);
+    }
   }
 }
