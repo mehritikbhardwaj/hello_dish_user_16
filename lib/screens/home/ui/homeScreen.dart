@@ -36,18 +36,22 @@ class _HomeScreenState extends State<HomeScreen> {
     SharedPref.shared.getPref();
 
     controller.getCurrentLoc(context);
+    callApi();
+  }
+
+  callApi() async {
     controller.getHomeDetails();
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     print(SharedPref.shared.pref!.getString(PrefKeys.token));
 
-
     List<SubCategoryItem> subCategoryItems = controller.subCategoryList;
 
-    String _getImage(String category){
-      switch(category.toLowerCase()){
+    String _getImage(String category) {
+      switch (category.toLowerCase()) {
         case 'good for breakfast':
           return 'https://media-assets.swiggy.com/swiggy/image/upload/f_auto,q_auto,fl_lossy/xyuu2wdu9l2pnj83ka3m';
         case 'delicious in punjabi':
@@ -70,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     Color _getColorForSubCategory(String category) {
-      switch(category.toLowerCase()) {
+      switch (category.toLowerCase()) {
         case 'good for breakfast':
           return AppColors.redGradient;
         case 'delicious in punjabi':
@@ -92,9 +96,8 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }
 
-
-    String _getIcon(String category){
-      switch(category.toLowerCase()){
+    String _getIcon(String category) {
+      switch (category.toLowerCase()) {
         case 'good for breakfast':
           return '🍞';
         case 'delicious in punjabi':
@@ -246,18 +249,24 @@ class _HomeScreenState extends State<HomeScreen> {
                     SizedBox(
                       width: SizeConfig.Width * 5,
                       height: SizeConfig.Height * 0.3,
-                      child: RestaurantsCard(Restaurants: controller.popularRestaurantList),
+                      child: RestaurantsCard(
+                          Restaurants: controller.popularRestaurantList),
                     ),
                     //
                     boxA3(),
                     Column(
-                      children: subCategoryItems.where((subCategoryItem) => subCategoryItem.restaurants.isNotEmpty).map((subCategoryItem) {
+                      children: subCategoryItems
+                          .where((subCategoryItem) =>
+                              subCategoryItem.restaurants.isNotEmpty)
+                          .map((subCategoryItem) {
                         return SizedBox(
                           height: SizeConfig.Height * 0.36,
                           child: cuisinesCard(
-                            cuisineTitle: '${subCategoryItem.subCategory.name}  ${_getIcon(subCategoryItem.subCategory.name)}',
+                            cuisineTitle:
+                                '${subCategoryItem.subCategory.name}  ${_getIcon(subCategoryItem.subCategory.name)}',
                             img: _getImage(subCategoryItem.subCategory.name),
-                            color: _getColorForSubCategory(subCategoryItem.subCategory.name),
+                            color: _getColorForSubCategory(
+                                subCategoryItem.subCategory.name),
                             restaurants: subCategoryItem.restaurants,
                           ),
                         );
@@ -338,7 +347,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     SizedBox(
                       width: SizeConfig.Width * 5,
                       // height: SizeConfig.Height * 0.3,
-                      child: restaurantsRectangleCard(controller.nearByRestaurantList),
+                      child: restaurantsRectangleCard(
+                          controller.nearByRestaurantList),
                     ),
                     //
                     boxA3()

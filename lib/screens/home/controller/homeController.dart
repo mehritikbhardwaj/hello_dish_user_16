@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:hello_dish_app/screens/home/models/locationModel.dart';
 import 'package:hello_dish_app/screens/home/models/offersModel.dart';
 import 'package:hello_dish_app/utilities/api_manager/apis.dart';
 import 'package:hello_dish_app/utilities/shared_pref..dart';
@@ -16,6 +17,7 @@ class HomeController extends GetxController {
   RxString area = "".obs;
   var isLoading = true.obs;
 
+  var locationList = <LocationData>[].obs;
   var offerList = <RestaurantOffer>[].obs;
   var popularRestaurantList = <Restaurant>[].obs;
   var nearByRestaurantList = <Restaurant>[].obs;
@@ -30,6 +32,21 @@ class HomeController extends GetxController {
       offerList.value = offers.restaurant;
     } finally {
       isLoading(false);
+    }
+  }
+
+  void getLocationList(String key) async {
+    try {
+      isLoading(true);
+      update();
+
+      var offers =
+          await HTTPClient.getLocationnList("${APIs.getLocation}?keyword=$key");
+      print(offers.toJson());
+      locationList.value = offers.location;
+    } finally {
+      isLoading(false);
+      update();
     }
   }
 
@@ -48,13 +65,16 @@ class HomeController extends GetxController {
   void getHomeDetails() async {
     try {
       isLoading(true);
+      update();
       var homeDetails = await HTTPClient.homeScreen(APIs.home);
       popularRestaurantList.value = homeDetails.data.ratingRestaurantArray;
       nearByRestaurantList.value = homeDetails.data.nearbyRestaurantArray;
       subCategoryList.value = homeDetails.data.subCategoryItems;
       offersList.value = homeDetails.data.offerArray;
+      getLocationList("");
     } finally {
       isLoading(false);
+      update();
     }
   }
 

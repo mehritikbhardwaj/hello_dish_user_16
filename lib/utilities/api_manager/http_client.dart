@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:hello_dish_app/screens/authentication/login/model/loginResponseModel.dart';
 import 'package:hello_dish_app/screens/cart/model/order_model.dart';
 import 'package:hello_dish_app/screens/home/models/create_order_model.dart';
+import 'package:hello_dish_app/screens/home/models/locationModel.dart';
 import 'package:hello_dish_app/screens/home/models/offersModel.dart';
 import 'package:hello_dish_app/utilities/shared_pref..dart';
 import 'package:http/http.dart' as http;
@@ -446,6 +447,21 @@ class HTTPClient {
     });
 
     return homeModelFromJson(res.body);
+  }
+
+  static Future<LocationModel> getLocationnList(String api) async {
+    final url = Uri.parse(api);
+    var token = SharedPref.shared.pref!.getString(PrefKeys.token)! ?? "";
+
+    final http.Response res;
+    res = await http.get(url, headers: {
+      'apiusername': 'lbus8830082tree',
+      'apipassword': 'NDU0dDctZmRhajcta2Zkc2ozLWZkYXNr',
+      'Content-type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+
+    return locationModelFromJson(res.body);
   }
 
   static Future<void> addFav(String api) async {

@@ -4,6 +4,7 @@ class APIs {
   static const login = "${base}customer/api/login";
   static const signup = "${base}customer/api/signup";
   static const update = "${base}customer/api/update";
+  static const getLocation = "${base}customer/api/getLocation";
 
   static const getOffers = "${base}customer/api/getOffers";
   static const home = "${base}customer/api/home";
