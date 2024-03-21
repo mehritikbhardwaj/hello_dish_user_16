@@ -2,10 +2,12 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:hello_dish_app/screens/authentication/login/model/loginResponseModel.dart';
+import 'package:hello_dish_app/screens/cart/model/cart_order_model.dart';
 import 'package:hello_dish_app/screens/cart/model/order_model.dart';
 import 'package:hello_dish_app/screens/home/models/create_order_model.dart';
 import 'package:hello_dish_app/screens/home/models/locationModel.dart';
@@ -425,14 +427,14 @@ class HTTPClient {
 
   static Future<OffersModel> getOffersList(String api) async {
     final url = Uri.parse(api);
+    var token = SharedPref.shared.pref!.getString(PrefKeys.token)! ?? "";
 
     final http.Response res;
     res = await http.get(url, headers: {
       'apiusername': 'lbus8830082tree',
       'apipassword': 'NDU0dDctZmRhajcta2Zkc2ozLWZkYXNr',
       'Content-type': 'application/json',
-      'Authorization':
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OTMzMDFiOWY0N2M1NTE2M2FiOGQzMSIsImlhdCI6MTcwNzY1NDc5Mn0.kN5YVdoumzLoQw3xPf7meHSt8WBACzgCKVGgn2V4Vfw',
+      'Authorization': 'Bearer $token',
     });
 
     return offersModelFromJson(res.body);
@@ -440,14 +442,14 @@ class HTTPClient {
 
   static Future<HomeModel> homeScreen(String api) async {
     final url = Uri.parse(api);
+    var token = SharedPref.shared.pref!.getString(PrefKeys.token)! ?? "";
 
     final http.Response res;
     res = await http.get(url, headers: {
       'apiusername': 'lbus8830082tree',
       'apipassword': 'NDU0dDctZmRhajcta2Zkc2ozLWZkYXNr',
       'Content-type': 'application/json',
-      'Authorization':
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ODlhMTMxMGNlN2UzNmE1OTU4YjI1MSIsImlhdCI6MTcwODUzOTA0M30.Ekg_pvZVJSxzki_sZBaJbVr1R3sRDGdNhaofz56EL14',
+      'Authorization': 'Bearer $token',
     });
 
     return homeModelFromJson(res.body);
@@ -470,6 +472,7 @@ class HTTPClient {
 
   static Future<void> addFav(String api) async {
     final url = Uri.parse(api);
+    var token = SharedPref.shared.pref!.getString(PrefKeys.token)! ?? "";
 
     final http.Response res = await http.get(
       url,
@@ -477,8 +480,7 @@ class HTTPClient {
         'apiusername': 'lbus8830082tree',
         'apipassword': 'NDU0dDctZmRhajcta2Zkc2ozLWZkYXNr',
         'Content-Type': 'application/json',
-        'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ODlhMTMxMGNlN2UzNmE1OTU4YjI1MSIsImlhdCI6MTcwODUzOTA0M30.Ekg_pvZVJSxzki_sZBaJbVr1R3sRDGdNhaofz56EL14',
+        'Authorization': 'Bearer $token',
       },
     );
 
@@ -496,6 +498,7 @@ class HTTPClient {
   static Future<RestDetailsModel> getRestDetails(String api, Map? param) async {
     print("Rest details");
     final url = Uri.parse(api);
+    var token = SharedPref.shared.pref!.getString(PrefKeys.token)! ?? "";
 
     final http.Response res;
     res = await http.post(url,
@@ -503,8 +506,7 @@ class HTTPClient {
           'apiusername': 'lbus8830082tree',
           'apipassword': 'NDU0dDctZmRhajcta2Zkc2ozLWZkYXNr',
           'Content-type': 'application/json',
-          'Authorization':
-              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ODlhMTMxMGNlN2UzNmE1OTU4YjI1MSIsImlhdCI6MTcwODUzOTA0M30.Ekg_pvZVJSxzki_sZBaJbVr1R3sRDGdNhaofz56EL14',
+          'Authorization': 'Bearer $token',
         },
         body: jsonEncode(param));
 
@@ -513,6 +515,7 @@ class HTTPClient {
 
   static Future<CreateOrderModel> createOrder(String api, Map? param) async {
     final url = Uri.parse(api);
+    var token = SharedPref.shared.pref!.getString(PrefKeys.token)! ?? "";
 
     final http.Response res;
     res = await http.post(url,
@@ -520,8 +523,7 @@ class HTTPClient {
           'apiusername': 'lbus8830082tree',
           'apipassword': 'NDU0dDctZmRhajcta2Zkc2ozLWZkYXNr',
           'Content-type': 'application/json',
-          'Authorization':
-              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ODlhMTMxMGNlN2UzNmE1OTU4YjI1MSIsImlhdCI6MTcwODUzOTA0M30.Ekg_pvZVJSxzki_sZBaJbVr1R3sRDGdNhaofz56EL14',
+          'Authorization': 'Bearer $token',
         },
         body: jsonEncode(param));
 
@@ -532,22 +534,25 @@ class HTTPClient {
 
   static Future<OrderModel> getCartItem(String api) async {
     final url = Uri.parse(api);
+    var token = SharedPref.shared.pref!.getString(PrefKeys.token)! ?? "";
 
+    log(api.toString());
     final http.Response res;
     res = await http.get(url, headers: {
       'apiusername': 'lbus8830082tree',
       'apipassword': 'NDU0dDctZmRhajcta2Zkc2ozLWZkYXNr',
       'Content-type': 'application/json',
-      'Authorization':
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ODlhMTMxMGNlN2UzNmE1OTU4YjI1MSIsImlhdCI6MTcwODUzOTA0M30.Ekg_pvZVJSxzki_sZBaJbVr1R3sRDGdNhaofz56EL14',
+      'Authorization': 'Bearer $token',
     });
     final map = jsonDecode(res.body);
+    log(res.body.toString());
 
     return OrderModel.fromJson(map);
   }
 
   static Future<OrderModel> updateOrder(String api, Map? param) async {
     final url = Uri.parse(api);
+    var token = SharedPref.shared.pref!.getString(PrefKeys.token)! ?? "";
 
     final http.Response res;
     res = await http.put(url,
@@ -555,8 +560,7 @@ class HTTPClient {
           'apiusername': 'lbus8830082tree',
           'apipassword': 'NDU0dDctZmRhajcta2Zkc2ozLWZkYXNr',
           'Content-type': 'application/json',
-          'Authorization':
-              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ODlhMTMxMGNlN2UzNmE1OTU4YjI1MSIsImlhdCI6MTcwODUzOTA0M30.Ekg_pvZVJSxzki_sZBaJbVr1R3sRDGdNhaofz56EL14',
+          'Authorization': 'Bearer $token',
         },
         body: jsonEncode(param));
 
@@ -606,5 +610,45 @@ class HTTPClient {
     final map = jsonDecode(res.body);
 
     return map;
+  }
+
+  static Future<OrderModel> updateOrderStatus(String api, Map? param) async {
+    final url = Uri.parse(api);
+    var token = SharedPref.shared.pref!.getString(PrefKeys.token)! ?? "";
+
+    final http.Response res;
+    res = await http.put(url,
+        headers: {
+          'apiusername': 'lbus8830082tree',
+          'apipassword': 'NDU0dDctZmRhajcta2Zkc2ozLWZkYXNr',
+          'Content-type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(param));
+
+    final map = jsonDecode(res.body);
+    isList = false;
+    return OrderModel.fromJson(map);
+  }
+
+  static Future<CartOrderModel> getCartOrders(String api) async {
+    final url = Uri.parse(api);
+    var token = SharedPref.shared.pref!.getString(PrefKeys.token)! ?? "";
+
+    final http.Response res;
+    res = await http.get(
+      url,
+      headers: {
+        'apiusername': 'lbus8830082tree',
+        'apipassword': 'NDU0dDctZmRhajcta2Zkc2ozLWZkYXNr',
+        'Content-type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    final map = jsonDecode(res.body);
+    print(res.body.toString());
+    isList = false;
+    return cartOrderModelFromJson(res.body);
   }
 }

@@ -36,434 +36,480 @@ class _CartCompleteScreenState extends State<CartCompleteScreen> {
         cartCompleteController,
       ).paddingOnly(left: 30.0),
       body: Obx(
-        () => SingleChildScrollView(
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Column(
-                children: [
-                  //  HOTEL AND ORDER CONTAINER
-                  cartCompleteController.orderData.value.isBlank != true
-                      ? customContainer(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                cartCompleteController
-                                    .restaurant.restaurantName,
-                                style: GoogleFonts.poppins(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              boxA1(),
-                              (cartCompleteController.orderData.value.orderItems
-                                              ?.length ??
-                                          0) >=
-                                      1
-                                  ? ListView.builder(
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      itemCount: cartCompleteController
-                                          .orderData.value.orderItems?.length,
-                                      itemBuilder: (context, index) {
-                                        final item = cartCompleteController
-                                            .orderData.value.orderItems?[index];
-                                        final oldData = cartCompleteController
-                                            .orderData.value;
-                                        return _itemRow(item, () {
-                                          // PLUS ACTION
-                                          item?.quantity = (item.quantity! + 1);
-
-                                          var items = [{}];
-                                          for (var element
-                                              in oldData.orderItems!) {
-                                            items.add(element.toJson());
-                                          }
-
-                                          items.removeWhere((element) =>
-                                              element.keys.length <= 0);
-                                          final params = {
-                                            "orderId": oldData.sId,
-                                            "paymentType": oldData
-                                                .paymentType, //prepayment
-                                            "orderPrice": (item?.price ?? 0) *
-                                                (item?.quantity ?? 0),
-                                            "orderItems": items,
-                                            "restaurantId":
-                                                cartCompleteController
-                                                    .restaurant.id,
-                                            "customerLocationId":
-                                                "65ce7574529c5188a259d544",
-                                            "lat": 22.7533,
-                                            "long": 75.8937,
-                                            "status": 0,
-                                            "offer": cartCompleteController
-                                                    .offerApplied?.offerCode ??
-                                                ""
-                                          };
-                                          cartCompleteController
-                                              .updateOrder(params);
-                                        }, () {
-                                          // MINUS ACTION
-                                          if (item != null) {
-                                            if (item.quantity! > 1) {
-                                              item.quantity =
-                                                  (item.quantity! - 1);
-
-                                              var items = [{}];
-                                              for (var element
-                                                  in oldData.orderItems!) {
-                                                items.add(element.toJson());
-                                              }
-
-                                              items.removeWhere((element) =>
-                                                  element.keys.length <= 0);
-                                              final params = {
-                                                "orderId": oldData.sId,
-                                                "paymentType": oldData
-                                                    .paymentType, //prepayment
-                                                "orderPrice":
-                                                    (item.price ?? 0) *
-                                                        (item.quantity ?? 0),
-                                                "orderItems": items,
-                                                "restaurantId":
-                                                    cartCompleteController
-                                                        .restaurant.id,
-                                                "customerLocationId":
-                                                    "65ce7574529c5188a259d544",
-                                                "lat": 22.7533,
-                                                "long": 75.8937,
-                                                "status": 0,
-                                                "offer": cartCompleteController
-                                                        .offerApplied
-                                                        ?.offerCode ??
-                                                    ""
-                                              };
-
-                                              cartCompleteController
-                                                  .updateOrder(params);
-                                            }
-                                          }
-                                        });
-                                      },
-                                    )
-                                  : const SizedBox.shrink(),
-                              boxA3(),
-                              customDevider(),
-                              boxA3(),
-                              Row(
-                                children: [
-                                  Text(
-                                    "31 mins",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 16.0,
+        () => cartCompleteController.isLoading.value
+            ? Center(child: const CircularProgressIndicator())
+            : SingleChildScrollView(
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        //  HOTEL AND ORDER CONTAINER
+                        cartCompleteController.orderData.value.isBlank != true
+                            ? customContainer(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      cartCompleteController
+                                          .restaurant.restaurantName,
+                                      style: GoogleFonts.poppins(
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.bold),
                                     ),
-                                  ),
-                                  boxB1(),
-                                  Text(
-                                    "Delivery to 🏡 Home",
-                                    style: GoogleFonts.poppins(
-                                        color: AppColors.grey),
-                                  ),
-                                ],
-                              ),
-                              boxA2(),
-                              TextFormField(
-                                cursorColor: Colors.black,
-                                decoration: const InputDecoration(
-                                  hintText: "Add cooking instruction/request",
-                                  suffixIcon: Icon(Iconsax.add),
+                                    boxA1(),
+                                    (cartCompleteController.orderData.value
+                                                    .orderItems?.length ??
+                                                0) >=
+                                            1
+                                        ? ListView.builder(
+                                            shrinkWrap: true,
+                                            physics:
+                                                const NeverScrollableScrollPhysics(),
+                                            itemCount: cartCompleteController
+                                                .orderData
+                                                .value
+                                                .orderItems
+                                                ?.length,
+                                            itemBuilder: (context, index) {
+                                              final item =
+                                                  cartCompleteController
+                                                      .orderData
+                                                      .value
+                                                      .orderItems?[index];
+                                              final oldData =
+                                                  cartCompleteController
+                                                      .orderData.value;
+                                              return _itemRow(item, () {
+                                                // PLUS ACTION
+                                                item?.quantity =
+                                                    (item.quantity! + 1);
+
+                                                var items = [{}];
+                                                for (var element
+                                                    in oldData.orderItems!) {
+                                                  items.add(element.toJson());
+                                                }
+
+                                                items.removeWhere((element) =>
+                                                    element.keys.length <= 0);
+                                                final params = {
+                                                  "orderId": oldData.sId,
+                                                  "paymentType": oldData
+                                                      .paymentType, //prepayment
+                                                  "orderPrice":
+                                                      (item?.price ?? 0) *
+                                                          (item?.quantity ?? 0),
+                                                  "orderItems": items,
+                                                  "restaurantId":
+                                                      cartCompleteController
+                                                          .restaurant.id,
+                                                  "customerLocationId":
+                                                      "65ce7574529c5188a259d544",
+                                                  "lat": 22.7533,
+                                                  "long": 75.8937,
+                                                  "status": 0,
+                                                  "offer":
+                                                      cartCompleteController
+                                                              .offerApplied
+                                                              ?.offerCode ??
+                                                          ""
+                                                };
+                                                cartCompleteController
+                                                    .updateOrder(params);
+                                              }, () {
+                                                // MINUS ACTION
+                                                if (item != null) {
+                                                  if (item.quantity! > 1) {
+                                                    item.quantity =
+                                                        (item.quantity! - 1);
+
+                                                    var items = [{}];
+                                                    for (var element in oldData
+                                                        .orderItems!) {
+                                                      items.add(
+                                                          element.toJson());
+                                                    }
+
+                                                    items.removeWhere(
+                                                        (element) =>
+                                                            element
+                                                                .keys.length <=
+                                                            0);
+                                                    final params = {
+                                                      "orderId": oldData.sId,
+                                                      "paymentType": oldData
+                                                          .paymentType, //prepayment
+                                                      "orderPrice":
+                                                          (item.price ?? 0) *
+                                                              (item.quantity ??
+                                                                  0),
+                                                      "orderItems": items,
+                                                      "restaurantId":
+                                                          cartCompleteController
+                                                              .restaurant.id,
+                                                      "customerLocationId":
+                                                          "65ce7574529c5188a259d544",
+                                                      "lat": 22.7533,
+                                                      "long": 75.8937,
+                                                      "status": 0,
+                                                      "offer":
+                                                          cartCompleteController
+                                                                  .offerApplied
+                                                                  ?.offerCode ??
+                                                              ""
+                                                    };
+
+                                                    cartCompleteController
+                                                        .updateOrder(params);
+                                                  }
+                                                }
+                                              });
+                                            },
+                                          )
+                                        : const SizedBox.shrink(),
+                                    boxA3(),
+                                    customDevider(),
+                                    boxA3(),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "31 mins",
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 16.0,
+                                          ),
+                                        ),
+                                        boxB1(),
+                                        Text(
+                                          "Delivery to 🏡 Home",
+                                          style: GoogleFonts.poppins(
+                                              color: AppColors.grey),
+                                        ),
+                                      ],
+                                    ),
+                                    boxA2(),
+                                    TextFormField(
+                                      cursorColor: Colors.black,
+                                      decoration: const InputDecoration(
+                                        hintText:
+                                            "Add cooking instruction/request",
+                                        suffixIcon: Icon(Iconsax.add),
+                                      ),
+                                    )
+                                  ],
                                 ),
                               )
-                            ],
-                          ),
-                        )
-                      : const SizedBox.shrink(),
+                            : const SizedBox.shrink(),
 
-                  //  HOTEL AND ORDER CONTAINER END
-                  // OFFERS
-                  boxA3(),
-                  customContainer(
-                      child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                              flex: 1,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "${cartCompleteController.offerApplied == null ? cartCompleteController.restaurantOffer?.first.offerCode : cartCompleteController.offerApplied?.offerCode}",
+                        //  HOTEL AND ORDER CONTAINER END
+                        // OFFERS
+                        boxA3(),
+                        customContainer(
+                            child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                    flex: 1,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "${cartCompleteController.offerApplied == null ? cartCompleteController.restaurantOffer?.first.offerCode : cartCompleteController.offerApplied?.offerCode}",
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 18.0,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                        Text(
+                                          "Save ₹${cartCompleteController.offerApplied == null ? cartCompleteController.restaurantOffer?.first.upto : cartCompleteController.offerApplied?.upto}",
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 12.0,
+                                              color: AppColors.grey),
+                                        ),
+                                      ],
+                                    )),
+                                GestureDetector(
+                                  onTap: () {
+                                    var oldData =
+                                        cartCompleteController.orderData.value;
+
+                                    if (cartCompleteController.offerApplied ==
+                                        null) {
+                                      cartCompleteController.offerApplied =
+                                          cartCompleteController
+                                              .restaurantOffer?.first;
+
+                                      var items = [{}];
+                                      for (var element in oldData.orderItems!) {
+                                        items.add(element.toJson());
+                                      }
+
+                                      items.removeWhere((element) =>
+                                          element.keys.length <= 0);
+
+                                      final params = {
+                                        "orderId": oldData.sId,
+                                        "paymentType":
+                                            oldData.paymentType, //prepayment
+                                        "orderPrice": oldData.totalCost,
+
+                                        "orderItems": items,
+                                        "restaurantId": cartCompleteController
+                                            .restaurant.id,
+                                        "customerLocationId":
+                                            "65ce7574529c5188a259d544",
+                                        "lat": 22.7533,
+                                        "long": 75.8937,
+                                        "status": 0,
+                                        "offer": cartCompleteController
+                                                .offerApplied?.offerCode ??
+                                            ""
+                                      };
+
+                                      cartCompleteController
+                                          .updateOrder(params);
+                                    } else {
+                                      cartCompleteController.offerApplied =
+                                          null;
+
+                                      var items = [{}];
+                                      for (var element in oldData.orderItems!) {
+                                        items.add(element.toJson());
+                                      }
+
+                                      items.removeWhere((element) =>
+                                          element.keys.length <= 0);
+
+                                      final params = {
+                                        "orderId": oldData.sId,
+                                        "paymentType":
+                                            oldData.paymentType, //prepayment
+                                        "orderPrice": oldData.totalCost,
+
+                                        "orderItems": items,
+                                        "restaurantId": cartCompleteController
+                                            .restaurant.id,
+                                        "customerLocationId":
+                                            "65ce7574529c5188a259d544",
+                                        "lat": 22.7533,
+                                        "long": 75.8937,
+                                        "status": 0,
+                                        "offer": cartCompleteController
+                                                .offerApplied?.offerCode ??
+                                            ""
+                                      };
+
+                                      cartCompleteController
+                                          .updateOrder(params);
+                                    }
+                                    setState(() {});
+                                  },
+                                  child: Text(
+                                    cartCompleteController.offerApplied != null
+                                        ? "Remove"
+                                        : "Apply",
                                     style: GoogleFonts.poppins(
-                                        fontSize: 18.0,
+                                        color: AppColors.theme,
                                         fontWeight: FontWeight.w500),
                                   ),
-                                  Text(
-                                    "Save ₹${cartCompleteController.offerApplied == null ? cartCompleteController.restaurantOffer?.first.upto : cartCompleteController.offerApplied?.upto}",
-                                    style: GoogleFonts.poppins(
-                                        fontSize: 12.0, color: AppColors.grey),
+                                ),
+                              ],
+                            ),
+                            boxA1(),
+                            customDevider(),
+                            boxA1(),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context)
+                                    .push(
+                                  MaterialPageRoute(
+                                    builder: (_) => OfferScreen(
+                                      cartCompleteController:
+                                          cartCompleteController,
+                                    ),
                                   ),
-                                ],
-                              )),
-                          GestureDetector(
-                            onTap: () {
-                              var oldData =
-                                  cartCompleteController.orderData.value;
-
-                              if (cartCompleteController.offerApplied == null) {
-                                cartCompleteController.offerApplied =
-                                    cartCompleteController
-                                        .restaurantOffer?.first;
-
-                                var items = [{}];
-                                for (var element in oldData.orderItems!) {
-                                  items.add(element.toJson());
-                                }
-
-                                items.removeWhere(
-                                    (element) => element.keys.length <= 0);
-
-                                final params = {
-                                  "orderId": oldData.sId,
-                                  "paymentType":
-                                      oldData.paymentType, //prepayment
-                                  "orderPrice": oldData.totalCost,
-
-                                  "orderItems": items,
-                                  "restaurantId":
-                                      cartCompleteController.restaurant.id,
-                                  "customerLocationId":
-                                      "65ce7574529c5188a259d544",
-                                  "lat": 22.7533,
-                                  "long": 75.8937,
-                                  "status": 0,
-                                  "offer": cartCompleteController
-                                          .offerApplied?.offerCode ??
-                                      ""
-                                };
-
-                                cartCompleteController.updateOrder(params);
-                              } else {
-                                cartCompleteController.offerApplied = null;
-
-                                var items = [{}];
-                                for (var element in oldData.orderItems!) {
-                                  items.add(element.toJson());
-                                }
-
-                                items.removeWhere(
-                                    (element) => element.keys.length <= 0);
-
-                                final params = {
-                                  "orderId": oldData.sId,
-                                  "paymentType":
-                                      oldData.paymentType, //prepayment
-                                  "orderPrice": oldData.totalCost,
-
-                                  "orderItems": items,
-                                  "restaurantId":
-                                      cartCompleteController.restaurant.id,
-                                  "customerLocationId":
-                                      "65ce7574529c5188a259d544",
-                                  "lat": 22.7533,
-                                  "long": 75.8937,
-                                  "status": 0,
-                                  "offer": cartCompleteController
-                                          .offerApplied?.offerCode ??
-                                      ""
-                                };
-
-                                cartCompleteController.updateOrder(params);
-                              }
-                              setState(() {});
-                            },
-                            child: Text(
-                              cartCompleteController.offerApplied != null
-                                  ? "Remove"
-                                  : "Apply",
-                              style: GoogleFonts.poppins(
-                                  color: AppColors.theme,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ],
-                      ),
-                      boxA1(),
-                      customDevider(),
-                      boxA1(),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context)
-                              .push(
-                            MaterialPageRoute(
-                              builder: (_) => OfferScreen(
-                                cartCompleteController: cartCompleteController,
+                                )
+                                    .then((val) {
+                                  print("val--------------------");
+                                  setState(() {});
+                                });
+                              },
+                              child: Text(
+                                "View more coupons  >",
+                                style:
+                                    GoogleFonts.poppins(color: AppColors.grey),
                               ),
-                            ),
-                          )
-                              .then((val) {
-                            print("val--------------------");
-                            setState(() {});
-                          });
-                        },
-                        child: Text(
-                          "View more coupons  >",
-                          style: GoogleFonts.poppins(color: AppColors.grey),
-                        ),
-                      )
-                    ],
-                  )),
-                  // OFFERS END
-                  // PAYMENT METHOD
-                  boxA3(),
-                  customContainer(
-                    padding: const EdgeInsets.only(
-                        top: 18.0, bottom: 18.0, right: 12.0, left: 12.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
+                            )
+                          ],
+                        )),
+                        // OFFERS END
+                        // PAYMENT METHOD
+                        boxA3(),
                         customContainer(
                           padding: const EdgeInsets.only(
-                              top: 9.0, bottom: 9.0, right: 24.0, left: 24.0),
-                          bgColor: cartCompleteController.paymentType.value
-                              ? AppColors.backgroundblueColour
-                              : AppColors.theme,
-                          onTap: () {
-                            cartCompleteController.paymentMethod();
-                          },
-                          child: Text("Online",
-                              style: GoogleFonts.poppins(
-                                  color:
-                                      cartCompleteController.paymentType.value
-                                          ? Colors.black
-                                          : Colors.white)),
-                        ),
-                        customContainer(
-                          padding: const EdgeInsets.only(
-                              top: 9.0, bottom: 9.0, right: 24.0, left: 24.0),
-                          bgColor: cartCompleteController.paymentType.value
-                              ? AppColors.theme
-                              : AppColors.backgroundblueColour,
-                          onTap: () {
-                            cartCompleteController.paymentMethod();
-                          },
-                          child: Text(
-                            "Cash On Delivery",
-                            style: GoogleFonts.poppins(
-                                color: cartCompleteController.paymentType.value
-                                    ? Colors.white
-                                    : Colors.black),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // PAYMENT METHOD END
-                  // BILL DETAILS
-                  boxA3(),
-
-                  customContainer(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Item Total",
-                            style: GoogleFonts.poppins(color: AppColors.grey),
-                          ),
-                          Text(
-                              "${cartCompleteController.orderData.value.orderPrice}")
-                        ],
-                      ),
-                      boxA2(),
-                      customDevider(),
-                      boxA2(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Delivery Charge",
-                            style: GoogleFonts.poppins(color: AppColors.grey),
-                          ),
-                          Row(
+                              top: 18.0, bottom: 18.0, right: 12.0, left: 12.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              Text(
-                                "₹${cartCompleteController.orderData.value.deliveryCharge}",
-                                style: GoogleFonts.poppins(
-                                    decoration: TextDecoration.lineThrough),
+                              customContainer(
+                                padding: const EdgeInsets.only(
+                                    top: 9.0,
+                                    bottom: 9.0,
+                                    right: 24.0,
+                                    left: 24.0),
+                                bgColor:
+                                    cartCompleteController.paymentType.value
+                                        ? AppColors.backgroundblueColour
+                                        : AppColors.theme,
+                                onTap: () {
+                                  cartCompleteController.paymentMethod();
+                                },
+                                child: Text("Online",
+                                    style: GoogleFonts.poppins(
+                                        color: cartCompleteController
+                                                .paymentType.value
+                                            ? Colors.black
+                                            : Colors.white)),
                               ),
-                              Text(
-                                " FREE",
-                                style: GoogleFonts.poppins(
-                                    color: AppColors.greenGradient),
+                              customContainer(
+                                padding: const EdgeInsets.only(
+                                    top: 9.0,
+                                    bottom: 9.0,
+                                    right: 24.0,
+                                    left: 24.0),
+                                bgColor:
+                                    cartCompleteController.paymentType.value
+                                        ? AppColors.theme
+                                        : AppColors.backgroundblueColour,
+                                onTap: () {
+                                  cartCompleteController.paymentMethod();
+                                },
+                                child: Text(
+                                  "Cash On Delivery",
+                                  style: GoogleFonts.poppins(
+                                      color: cartCompleteController
+                                              .paymentType.value
+                                          ? Colors.white
+                                          : Colors.black),
+                                ),
                               ),
                             ],
+                          ),
+                        ),
+                        // PAYMENT METHOD END
+                        // BILL DETAILS
+                        boxA3(),
+
+                        customContainer(
+                            child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Item Total",
+                                  style: GoogleFonts.poppins(
+                                      color: AppColors.grey),
+                                ),
+                                Text(
+                                    "${cartCompleteController.orderData.value.orderPrice}")
+                              ],
+                            ),
+                            boxA2(),
+                            customDevider(),
+                            boxA2(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Delivery Charge",
+                                  style: GoogleFonts.poppins(
+                                      color: AppColors.grey),
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "₹ ${double.parse(cartCompleteController.orderData.value.deliveryCharge.toString()).toStringAsFixed(2)}",
+                                      style: GoogleFonts.poppins(
+                                          decoration:
+                                              TextDecoration.lineThrough),
+                                    ),
+                                    Text(
+                                      " FREE",
+                                      style: GoogleFonts.poppins(
+                                          color: AppColors.greenGradient),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                            boxA1(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Restaurant GST",
+                                  style: GoogleFonts.poppins(
+                                      color: AppColors.grey),
+                                ),
+                                Text(
+                                  "₹ ${double.parse(cartCompleteController.orderData.value.gstCharge.toString()).toStringAsFixed(2)}",
+                                  //"₹${cartCompleteController.orderData.value.gstCharge}"
+                                )
+                              ],
+                            ),
+                            boxA1(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Restaurant Packing",
+                                  style: GoogleFonts.poppins(
+                                      color: AppColors.grey),
+                                ),
+                                Text(
+                                    "₹${cartCompleteController.orderData.value.packingCharge}")
+                              ],
+                            ),
+                            boxA2(),
+                            customDevider(),
+                            boxA2(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "TO PAY",
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                                Text(
+                                  "₹ ${cartCompleteController.orderData.value.totalCost}",
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.w500),
+                                )
+                              ],
+                            ),
+                          ],
+                        )),
+                        SizedBox(
+                          height: SizeConfig.Height * 0.1,
+                        )
+                      ],
+                    ).paddingAll(18.0),
+                    cartCompleteController.isLoading.isTrue
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.orangeGradient,
+                            ),
                           )
-                        ],
-                      ),
-                      boxA1(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Restaurant GST",
-                            style: GoogleFonts.poppins(color: AppColors.grey),
-                          ),
-                          Text(
-                              "₹${cartCompleteController.orderData.value.gstCharge}")
-                        ],
-                      ),
-                      boxA1(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Restaurant Packing",
-                            style: GoogleFonts.poppins(color: AppColors.grey),
-                          ),
-                          Text(
-                              "₹${cartCompleteController.orderData.value.packingCharge}")
-                        ],
-                      ),
-                      boxA2(),
-                      customDevider(),
-                      boxA2(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "TO PAY",
-                            style: GoogleFonts.poppins(
-                                fontSize: 18.0, fontWeight: FontWeight.w500),
-                          ),
-                          Text(
-                            "₹ ${cartCompleteController.orderData.value.totalCost}",
-                            style: GoogleFonts.poppins(
-                                fontSize: 18.0, fontWeight: FontWeight.w500),
-                          )
-                        ],
-                      ),
-                    ],
-                  )),
-                  SizedBox(
-                    height: SizeConfig.Height * 0.1,
-                  )
-                ],
-              ).paddingAll(18.0),
-              cartCompleteController.isLoading.isTrue
-                  ? const Center(
-                      child: CircularProgressIndicator(
-                        color: AppColors.orangeGradient,
-                      ),
-                    )
-                  : const SizedBox.shrink()
-            ],
-          ),
-        ),
+                        : const SizedBox.shrink()
+                  ],
+                ),
+              ),
       ),
     );
   }

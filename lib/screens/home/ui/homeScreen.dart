@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hello_dish_app/screens/home/cards/restaurantsRectangleCard.dart';
 import 'package:hello_dish_app/screens/home/controller/homeController.dart';
 import 'package:hello_dish_app/screens/home/ui/address_list_screen.dart';
+import 'package:hello_dish_app/screens/home/ui/resturant/notification_screen.dart';
 import 'package:hello_dish_app/utilities/app_color.dart';
 import 'package:hello_dish_app/utilities/shared_pref..dart';
 import 'package:hello_dish_app/utilities/sizedBox.dart';
@@ -118,6 +119,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return GetBuilder<HomeController>(
         builder: (c) => Scaffold(
               appBar: AppBar(
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      Get.to(const NotificationScreen());
+                    },
+                    icon: Icon(Iconsax.notification),
+                  )
+                ],
                 title: GestureDetector(
                   onTap: () {
                     Get.to(const AddressListScreen());

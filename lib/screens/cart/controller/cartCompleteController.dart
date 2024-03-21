@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:get/get.dart';
 import 'package:hello_dish_app/screens/cart/model/order_model.dart';
 import 'package:hello_dish_app/screens/cart/ui/orderTrackingScreen.dart';
@@ -40,11 +42,16 @@ class CartCompleteController extends GetxController {
     final url = "${APIs.getCartItem}${restaurant.id}";
     try {
       isLoading(true);
-      var res = await HTTPClient.getCartItem(url);
-      if (res.data != null) {
-        orderData(res.data?[0]);
-        update();
-      } else {}
+      try {
+        var res = await HTTPClient.getCartItem(url);
+        if (res.data != null) {
+          orderData(res.data?[0]);
+          update();
+        } else {}
+      } catch (stacktrace, error) {
+        log(stacktrace.toString());
+        log(error.toString());
+      }
     } finally {
       isLoading(false);
     }

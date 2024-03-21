@@ -16,7 +16,7 @@ class OrderModel {
         });
       }
     } else {
-      final obj = OrderData.fromJson(json['data'] as Map<String, dynamic>);
+      final obj = OrderData.fromJson(json['data'][0] as Map<String, dynamic>);
       data = <OrderData>[];
       data!.add(obj);
       isList = true;

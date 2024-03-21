@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
 import '../../../utilities/api_manager/apis.dart';
@@ -13,6 +15,8 @@ class ResturantDetailController extends GetxController {
   RxBool isMeal = false.obs;
   RxBool isDinner = false.obs;
   RxBool isRecommeded = false.obs;
+  RxString latitude = "".obs;
+  RxString longitude = "".obs;
   var isLoading = true.obs;
   var restDetails = Restaurant;
   List<ItemWrapper> foodMenu = [];
@@ -82,6 +86,22 @@ class ResturantDetailController extends GetxController {
     } finally {
       isLoading(false);
     }
+  }
+
+  Future<void> getCurrentLoc(BuildContext context) async {
+    LocationPermission permission;
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.deniedForever) {
+        return Future.error('Location Not Available');
+      }
+    }
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+
+    latitude.value = position.latitude.toString();
+    longitude.value = position.longitude.toString();
   }
 }
 

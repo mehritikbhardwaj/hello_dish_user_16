@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hello_dish_app/screens/cart/ui/cartCompleteScreen.dart';
+import 'package:hello_dish_app/screens/home/ui/resturant/favorite_screen.dart';
 import 'package:hello_dish_app/screens/restaurant/controller/restaurantController.dart';
 import 'package:hello_dish_app/utilities/app_color.dart';
 import 'package:hello_dish_app/utilities/shared_pref..dart';
@@ -74,7 +75,17 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                       ).paddingOnly(top: 3.0),
                     ],
                   ),
-                  actions: [const Icon(Iconsax.notification).paddingAll(18.0)]),
+                  actions: [
+                    GestureDetector(
+                      onTap: () {
+                        Get.to(const FavoriteScreen());
+                      },
+                      child: const Icon(
+                        Iconsax.heart,
+                        size: 24.0,
+                      ).paddingOnly(right: 6.0),
+                    )
+                  ]),
               body: SingleChildScrollView(
                 child: Column(
                   children: [
@@ -101,33 +112,34 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                               fontSize: 14.0, color: AppColors.grey)),
                       onChanged: (string) {},
                     ).paddingAll(18.0),
-                    customTitle(
-                            title: "Popular",
-                            subtitle: "Food",
-                            rSubtitle: " ",
-                            rTitle: " ")
-                        .paddingOnly(left: 18.0),
-                    SizedBox(
-                      width: SizeConfig.Width * 5,
-                      height: SizeConfig.Height * 0.24,
-                      child: popularFoodsCard(),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Get.to(CartCompleteScreen());
-                      },
-                      child: customTitle(
-                              title: "New added",
-                              subtitle: "Fod",
-                              rSubtitle: " ",
-                              rTitle: " ")
-                          .paddingOnly(left: 18.0),
-                    ),
-                    SizedBox(
-                      width: SizeConfig.Width * 5,
-                      height: SizeConfig.Height * 0.24,
-                      child: popularFoodsCard(),
-                    ),
+                    // customTitle(
+                    //         title: "Food",
+                    //         subtitle: "Popular",
+                    //         rSubtitle: " ",
+                    //         rTitle: " ")
+                    //     .paddingOnly(left: 18.0),
+                    // SizedBox(
+                    //   width: SizeConfig.Width * 5,
+                    //   height: SizeConfig.Height * 0.24,
+                    //   child: popularFoodsCard(),
+                    // ),
+                    // GestureDetector(
+                    //   onTap: () {
+                    //     Get.to(CartCompleteScreen());
+                    //   },
+                    //   child: customTitle(
+                    //           title: "Food",
+                    //           subtitle: "New Added",
+                    //           rSubtitle: " ",
+                    //           rTitle: " ")
+                    //       .paddingOnly(left: 18.0),
+                    // ),
+                    // SizedBox(
+                    //   width: SizeConfig.Width * 5,
+                    //   height: SizeConfig.Height * 0.24,
+                    //   child: popularFoodsCard(),
+                    // ),
+
                     customTitle(
                             title: "Popular",
                             subtitle: "Restaurant",

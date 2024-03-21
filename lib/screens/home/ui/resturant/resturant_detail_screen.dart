@@ -41,6 +41,7 @@ class _ResturantDetailScreenState extends State<ResturantDetailScreen> {
       // "vegNonVeg": 0,
       "timing": 1,
     };
+    controller.getCurrentLoc(context);
     controller.getRestDetails(restaurantId: widget.restaurant.id, param: param);
   }
 
@@ -485,10 +486,11 @@ class _ResturantDetailScreenState extends State<ResturantDetailScreen> {
                       ? _viewCartWidget(
                           itemCount: _cartItems.length,
                           onTap: () {
-                            final orderPrice = _cartItems
-                                .map((e) => e.price)
-                                .reduce((value, element) => value + element);
+                            // final orderPrice = _cartItems
+                            //     .map((e) => e.price)
+                            //     .reduce((value, element) => value + element);
 
+                            var orderPrice = 0;
                             var orderItems = [{}];
 
                             for (var e in _cartItems) {
@@ -503,6 +505,7 @@ class _ResturantDetailScreenState extends State<ResturantDetailScreen> {
                                 "image": image,
                                 "price": price,
                               });
+                              orderPrice = orderPrice + (quantity * price);
                             }
 
                             orderItems.removeWhere(
@@ -510,14 +513,17 @@ class _ResturantDetailScreenState extends State<ResturantDetailScreen> {
 
                             print("orderItems: $orderItems");
 
+                            print("orderItems: $orderPrice");
                             final params = {
                               "paymentType": "cod", //prepayment
                               "orderPrice": orderPrice,
                               "orderItems": orderItems,
                               "restaurantId": widget.restaurant.id,
                               "customerLocationId": "65ce7574529c5188a259d544",
-                              "lat": 22.7533,
-                              "long": 75.8937,
+                              "lat": double.parse(
+                                  controller.latitude.value.toString()),
+                              "long": double.parse(
+                                  controller.longitude.value.toString()),
                               "status": 0,
                               "offer": ""
                             };
