@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hello_dish_app/screens/cart/controller/cartCompleteController.dart';
 import 'package:hello_dish_app/screens/cart/model/order_model.dart';
 import 'package:hello_dish_app/screens/cart/ui/offerScreen.dart';
-import 'package:hello_dish_app/screens/cart/ui/orderTrackingScreen.dart';
 import 'package:hello_dish_app/screens/home/controller/resutrant_detail_controller.dart';
 import 'package:hello_dish_app/utilities/app_color.dart';
 import 'package:hello_dish_app/utilities/const.dart';
@@ -270,7 +269,12 @@ class _CartCompleteScreenState extends State<CartCompleteScreen> {
                                               .restaurantOffer?.first;
 
                                       var items = [{}];
+                                      double orderPrice = 0;
                                       for (var element in oldData.orderItems!) {
+                                        orderPrice += (double.parse(
+                                                element.price.toString()) *
+                                            double.parse(
+                                                element.quantity.toString()));
                                         items.add(element.toJson());
                                       }
                                       var selectedId = SharedPref.shared.pref!
@@ -287,7 +291,7 @@ class _CartCompleteScreenState extends State<CartCompleteScreen> {
                                           "orderId": oldData.sId,
                                           "paymentType":
                                               oldData.paymentType, //prepayment
-                                          "orderPrice": oldData.totalCost,
+                                          "orderPrice": orderPrice,
 
                                           "orderItems": items,
                                           "restaurantId": cartCompleteController
@@ -313,7 +317,12 @@ class _CartCompleteScreenState extends State<CartCompleteScreen> {
                                           null;
 
                                       var items = [{}];
+                                      double orderPrice = 0;
                                       for (var element in oldData.orderItems!) {
+                                        orderPrice += (double.parse(
+                                                element.price.toString()) *
+                                            double.parse(
+                                                element.quantity.toString()));
                                         items.add(element.toJson());
                                       }
 
@@ -330,7 +339,7 @@ class _CartCompleteScreenState extends State<CartCompleteScreen> {
                                           "orderId": oldData.sId,
                                           "paymentType":
                                               oldData.paymentType, //prepayment
-                                          "orderPrice": oldData.totalCost,
+                                          "orderPrice": orderPrice,
 
                                           "orderItems": items,
                                           "restaurantId": cartCompleteController

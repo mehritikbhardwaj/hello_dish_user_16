@@ -503,74 +503,76 @@ class _ResturantDetailScreenState extends State<ResturantDetailScreen> {
                       boxA3(),
                     ],
                   ),
-                  _cartItems.isNotEmpty
-                      ? _viewCartWidget(
-                          itemCount: _cartItems.length,
-                          onTap: () {
-                            // final orderPrice = _cartItems
-                            //     .map((e) => e.price)
-                            //     .reduce((value, element) => value + element);
+                  if (_cartItems.isNotEmpty &&
+                      _cartItems.every((element) => element.quantity > 0))
+                    _viewCartWidget(
+                      itemCount: _cartItems.length,
+                      onTap: () {
+                        // final orderPrice = _cartItems
+                        //     .map((e) => e.price)
+                        //     .reduce((value, element) => value + element);
 
-                            int orderPrice = 0;
-                            var orderItems = [{}];
+                        int orderPrice = 0;
+                        var orderItems = [{}];
 
-                            for (var e in _cartItems) {
-                              final itemName = e.name;
-                              final quantity = e.quantity;
-                              final image = e.image;
-                              final price = e.price;
+                        for (var e in _cartItems) {
+                          final itemName = e.name;
+                          final quantity = e.quantity;
+                          final image = e.image;
+                          final price = e.price;
 
-                              orderItems.add({
-                                "item": itemName,
-                                "quantity": quantity,
-                                "image": image,
-                                "price": price,
-                              });
-                              orderPrice = orderPrice + (quantity * price);
-                            }
+                          orderItems.add({
+                            "item": itemName,
+                            "quantity": quantity,
+                            "image": image,
+                            "price": price,
+                          });
+                          orderPrice = orderPrice + (quantity * price);
+                        }
 
-                            var selectedId = SharedPref.shared.pref!
-                                    .getString("primaryLocationId") ??
-                                "";
+                        var selectedId = SharedPref.shared.pref!
+                                .getString("primaryLocationId") ??
+                            "";
 
-                            orderItems.removeWhere(
-                                (element) => element.keys.length <= 0);
+                        orderItems
+                            .removeWhere((element) => element.keys.length <= 0);
 
-                            print("orderItems: $orderItems");
+                        print("orderItems: $orderItems");
 
-                            if (selectedId == "") {
-                              Utils.showAlertDialog(
-                                  "Please add a primary location");
-                            } else {
-                              final params = {
-                                "paymentType": "cod", //prepayment
-                                "orderPrice": orderPrice,
-                                "orderItems": orderItems,
-                                "restaurantId": widget.restaurant.id,
-                                "customerLocationId": selectedId,
-                                "lat": double.parse(
-                                    controller.latitude.value.toString()),
-                                "long": double.parse(
-                                    controller.longitude.value.toString()),
-                                "status": 0,
-                                "offer": ""
-                              };
-                              print("orderItems: $params");
-                              controller.createOrder(
-                                params,
-                                (p0) {
-                                  Get.to(() => const CartCompleteScreen(),
-                                      arguments: {
-                                        "items": _cartItems,
-                                        "restaurant": widget.restaurant,
-                                        "offer": controller.restaurantOffer
-                                      });
-                                },
-                              );
-                            }
-                          },
-                        )
-                      : const SizedBox.shrink()
+                        if (selectedId == "") {
+                          Utils.showAlertDialog(
+                              "Please add a primary location");
+                        } else {
+                          final params = {
+                            "paymentType": "cod", //prepayment
+                            "orderPrice": orderPrice,
+                            "orderItems": orderItems,
+                            "restaurantId": widget.restaurant.id,
+                            "customerLocationId": selectedId,
+                            "lat": double.parse(
+                                controller.latitude.value.toString()),
+                            "long": double.parse(
+                                controller.longitude.value.toString()),
+                            "status": 0,
+                            "offer": ""
+                          };
+                          print("orderItems: $params");
+                          controller.createOrder(
+                            params,
+                            (p0) {
+                              Get.to(() => const CartCompleteScreen(),
+                                  arguments: {
+                                    "items": _cartItems,
+                                    "restaurant": widget.restaurant,
+                                    "offer": controller.restaurantOffer
+                                  });
+                            },
+                          );
+                        }
+                      },
+                    )
+                  else
+                    const SizedBox.shrink()
                 ],
               ),
       );
@@ -727,8 +729,10 @@ class _ResturantDetailScreenState extends State<ResturantDetailScreen> {
                                       onTap: () {
                                         setState(() {
                                           item.quantity -= 1;
-                                          _cartItems.removeWhere((element) =>
-                                              element.id == item.id);
+                                          if (item.quantity == 0) {
+                                            _cartItems.removeWhere((element) =>
+                                                element.id == item.id);
+                                          }
                                         });
                                       },
                                       child: Center(
