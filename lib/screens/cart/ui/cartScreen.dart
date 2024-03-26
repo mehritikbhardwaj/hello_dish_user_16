@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hello_dish_app/screens/cart/ui/cartCompleteScreen.dart';
 import 'package:hello_dish_app/screens/cart/ui/scheduled.dart';
 import 'package:hello_dish_app/utilities/app_color.dart';
+
+import '../controller/orderController.dart';
+import 'CartOrders/cancel_order_screen.dart';
+import 'CartOrders/cart_completed_order.dart';
+import 'CartOrders/scheduled_order_screen.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -11,6 +17,11 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  @override
+  void initState() {
+    Get.put(CartOrderController()).getOrderList();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -29,7 +40,7 @@ class _CartScreenState extends State<CartScreen> {
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey.shade300,
-                    offset: Offset(0, 1),
+                    offset: const Offset(0, 1),
                     blurRadius: 9,
                   ),
                 ],
@@ -56,12 +67,12 @@ class _CartScreenState extends State<CartScreen> {
                 ),
               ),
             ).paddingAll(10.0),
-            Expanded(
+            const Expanded(
               child: TabBarView(
                 children: [
-                  ScheduledScreen(),
-                  Center(child: Text("No Data Available")),
-                  Center(child: Text("No Data Available")),
+                  ScheduledOrdersScreen(),
+                  CompletedOrdersScreen(),
+                  CancelOrdersScreen(),
                   // upComing(),
                   // completed(),
                   // cancelled(),

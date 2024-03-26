@@ -2,9 +2,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hello_dish_app/screens/FavourateScreen/fav_screen.dart';
 import 'package:hello_dish_app/screens/home/cards/restaurantsRectangleCard.dart';
 import 'package:hello_dish_app/screens/home/controller/homeController.dart';
-import 'package:hello_dish_app/screens/home/ui/address_list_screen.dart';
+import 'package:hello_dish_app/screens/address/ui/address_list_screen.dart';
+import 'package:hello_dish_app/screens/home/ui/resturant/notification_screen.dart';
 import 'package:hello_dish_app/utilities/app_color.dart';
 import 'package:hello_dish_app/utilities/shared_pref..dart';
 import 'package:hello_dish_app/utilities/sizedBox.dart';
@@ -12,6 +14,7 @@ import 'package:hello_dish_app/utilities/title.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../../utilities/mediaQuery.dart';
+import '../../search/ui/searchScreen.dart';
 import '../cards/cuisineCard.dart';
 import '../cards/restaurantsCard.dart';
 import '../models/homeModel.dart';
@@ -118,6 +121,23 @@ class _HomeScreenState extends State<HomeScreen> {
     return GetBuilder<HomeController>(
         builder: (c) => Scaffold(
               appBar: AppBar(
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      Get.to(const NotificationScreen());
+                    },
+                    icon: Icon(Iconsax.notification),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      Get.to(const FavScreen());
+                    },
+                    icon: Icon(
+                      Iconsax.heart,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
                 title: GestureDetector(
                   onTap: () {
                     Get.to(const AddressListScreen());
@@ -154,65 +174,98 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ///
-
-                    CarouselSlider.builder(
-                      itemCount: controller.offersList.length,
-                      itemBuilder: (
-                        BuildContext context,
-                        int itemIndex,
-                        int pageViewIndex,
-                      ) =>
-                          ClipRRect(
-                        borderRadius: BorderRadius.circular(22.0),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 12),
+                      child: GestureDetector(
+                        onTap: () {
+                          Get.to(const SearchScreen());
+                        },
                         child: Container(
                           decoration: BoxDecoration(
-                              color: Colors.grey.shade100,
-                              borderRadius: BorderRadius.circular(22.0)),
-                          width: double.infinity,
-                          child: Image.network(
-                            'https://cdn.grabon.in/gograbon/images/merchant/1610000375685.png',
-                            errorBuilder: (BuildContext context, Object error,
-                                StackTrace? stackTrace) {
-                              return Image.network(
-                                'https://api.hellodish.in/${controller.offersList[itemIndex].image}', // URL of the alternative image
-                                fit: BoxFit.cover,
-                                height: SizeConfig.Height * 0.09,
-                                width: SizeConfig.Width * 0.18,
-                              );
-                              // return const Center(
-                              //   child: Column(
-                              //     children: [
-                              //       Icon(Iconsax.danger),
-                              //       Text(
-                              //         "Image not available",
-                              //         textAlign: TextAlign.center,
-                              //         maxLines: 2,
-                              //       )
-                              //     ],
-                              //   ),
-                              // );
-                            },
-                            fit: BoxFit.cover,
-                            height: SizeConfig.Height * 0.09,
-                            width: SizeConfig.Width * 0.18,
+                            border: Border.all(color: AppColors.grey),
+                            borderRadius: BorderRadius.circular(36),
                           ),
-                          //  Image.network(
-                          //   '${c.offersData[itemIndex].image}',
-                          //   fit: BoxFit.fill,
-                          // ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Iconsax.search_normal,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  "Search food, Restaurant, Dish",
+                                  style: TextStyle(
+                                      fontSize: 14.0, color: AppColors.grey),
+                                )
+                              ],
+                            ),
+                          ),
                         ),
                       ),
-                      options: CarouselOptions(
-                        autoPlay: true,
-                        enableInfiniteScroll: true,
-                        viewportFraction: 0.9,
-                        enlargeFactor: 0.18,
-                        disableCenter: true,
-                        enlargeCenterPage: true,
-                        height: SizeConfig.Height * 0.16,
-                      ),
-                    ).paddingOnly(bottom: 30.0, top: 18.0),
+                    ),
+                    controller.offersList.isEmpty
+                        ? Container()
+                        : CarouselSlider.builder(
+                            itemCount: controller.offersList.length,
+                            itemBuilder: (
+                              BuildContext context,
+                              int itemIndex,
+                              int pageViewIndex,
+                            ) =>
+                                ClipRRect(
+                              borderRadius: BorderRadius.circular(22.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.grey.shade100,
+                                    borderRadius: BorderRadius.circular(22.0)),
+                                width: double.infinity,
+                                child: Image.network(
+                                  'https: //api.hellodish.in/${controller.offersList[itemIndex].image}',
+                                  errorBuilder: (BuildContext context,
+                                      Object error, StackTrace? stackTrace) {
+                                    return Image.network(
+                                      'https://cdn.grabon.in/gograbon/images/merchant/1610000375685.png', // URL of the alternative image
+                                      fit: BoxFit.cover,
+                                      height: SizeConfig.Height * 0.09,
+                                      width: SizeConfig.Width * 0.18,
+                                    );
+                                    // return const Center(
+                                    //   child: Column(
+                                    //     children: [
+                                    //       Icon(Iconsax.danger),
+                                    //       Text(
+                                    //         "Image not available",
+                                    //         textAlign: TextAlign.center,
+                                    //         maxLines: 2,
+                                    //       )
+                                    //     ],
+                                    //   ),
+                                    // );
+                                  },
+                                  fit: BoxFit.cover,
+                                  height: SizeConfig.Height * 0.09,
+                                  width: SizeConfig.Width * 0.18,
+                                ),
+                                //  Image.network(
+                                //   '${c.offersData[itemIndex].image}',
+                                //   fit: BoxFit.fill,
+                                // ),
+                              ),
+                            ),
+                            options: CarouselOptions(
+                              autoPlay: true,
+                              enableInfiniteScroll: true,
+                              viewportFraction: 0.9,
+                              enlargeFactor: 0.18,
+                              disableCenter: true,
+                              enlargeCenterPage: true,
+                              height: SizeConfig.Height * 0.16,
+                            ),
+                          ).paddingOnly(bottom: 30.0, top: 18.0),
 
                     ///
                     // Text(
@@ -239,6 +292,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     customTitle(
                             title: "Restaurant",
                             subtitle: "Popular",
+                            rSubtitle: " ",
+                            rTitle: " ")
+                        .paddingOnly(left: 18.0),
+                    SizedBox(
+                      width: SizeConfig.Width * 5,
+                      height: SizeConfig.Height * 0.3,
+                      child: RestaurantsCard(
+                          Restaurants: controller.popularRestaurantList),
+                    ),
+                    customTitle(
+                            title: "New Arrived",
+                            subtitle: "Restaurant",
                             rSubtitle: " ",
                             rTitle: " ")
                         .paddingOnly(left: 18.0),

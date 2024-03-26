@@ -2,35 +2,21 @@ var isList = true;
 
 class OrderModel {
   bool? status;
-  List<OrderData>? data;
+  OrderData? data;
 
   OrderModel({this.status, this.data});
 
   OrderModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
-    if (isList) {
-      if (json['data'] != null) {
-        data = <OrderData>[];
-        json['data'].forEach((v) {
-          data!.add(OrderData.fromJson(v));
-        });
-      }
-    } else {
-      final obj = OrderData.fromJson(json['data'] as Map<String, dynamic>);
-      data = <OrderData>[];
-      data!.add(obj);
-      isList = true;
-    }
+
+    final obj = OrderData.fromJson(json['data'] as Map<String, dynamic>);
+    data = obj;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['status'] = status;
-    if (this.data != null) {
-      data['data'] = this.data!.map((v) => v.toJson()).toList();
-    } else {
-      data['data'] = this.data;
-    }
+    data['data'] = this.data;
     return data;
   }
 }

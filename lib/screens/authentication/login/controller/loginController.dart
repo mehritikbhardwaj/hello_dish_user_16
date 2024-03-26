@@ -44,7 +44,7 @@ class LoginController extends GetxController {
         Get.offAll(const DashboardScreen());
       } else {
         SharedPref.shared.pref?.setInt(PrefKeys.isLoggedIn, 0);
-        // CommonUtil.showAlertDialog(res["status"]);
+        Utils.showAlertDialog(res["message"]);
       }
       isLoading = false.obs;
       update();

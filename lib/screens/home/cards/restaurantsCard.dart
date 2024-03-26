@@ -231,7 +231,7 @@ restaurantCard(Restaurant restaurant) {
       children: [
         const Icon(
           Iconsax.heart,
-          color: Colors.white,
+          color: Colors.red,
         ).paddingAll(18.0),
         const Spacer(),
         ClipRRect(

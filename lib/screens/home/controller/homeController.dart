@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:hello_dish_app/screens/home/models/locationModel.dart';
+import 'package:hello_dish_app/screens/address/model/locationModel.dart';
 import 'package:hello_dish_app/screens/home/models/offersModel.dart';
 import 'package:hello_dish_app/utilities/api_manager/apis.dart';
 import 'package:hello_dish_app/utilities/shared_pref..dart';
@@ -40,10 +40,16 @@ class HomeController extends GetxController {
       isLoading(true);
       update();
 
-      var offers =
+      var locationListRes =
           await HTTPClient.getLocationnList("${APIs.getLocation}?keyword=$key");
-      print(offers.toJson());
-      locationList(offers.location);
+
+      var selectedId =
+          SharedPref.shared.pref!.getString("primaryLocationId") ?? "";
+      if (selectedId == "" && locationListRes.location.isNotEmpty) {
+        SharedPref.shared.pref!.setString("primaryLocationId", selectedId);
+      }
+      print(locationListRes.toJson());
+      locationList(locationListRes.location);
     } finally {
       isLoading(false);
       update();

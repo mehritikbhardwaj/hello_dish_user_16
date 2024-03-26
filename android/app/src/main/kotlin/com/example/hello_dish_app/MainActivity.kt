@@ -1,4 +1,4 @@
-package com.example.hello_dish_app
+package com.app.hellodish
 
 import io.flutter.embedding.android.FlutterActivity
 

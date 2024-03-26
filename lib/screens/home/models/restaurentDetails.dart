@@ -301,10 +301,10 @@ class PreviousOrder {
   int cancelStatus;
   int status;
   int discountAmount;
-  int deliveryCharge;
-  int gstCharge;
-  int totalCost;
-  int packingCharge;
+  dynamic deliveryCharge;
+  dynamic gstCharge;
+  dynamic totalCost;
+  dynamic packingCharge;
   double lat;
   double long;
   int restaurantRating;
@@ -414,7 +414,7 @@ class OrderItem {
   String item;
   int quantity;
   String image;
-  String price;
+  dynamic price;
 
   factory OrderItem.fromJson(Map<String, dynamic> json) => OrderItem(
         item: json["item"],

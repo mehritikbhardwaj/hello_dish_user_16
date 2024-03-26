@@ -10,6 +10,8 @@ import 'package:hello_dish_app/screens/home/models/homeModel.dart';
 import 'package:hello_dish_app/screens/home/models/restaurentDetails.dart';
 import 'package:hello_dish_app/utilities/api_manager/apis.dart';
 import 'package:hello_dish_app/utilities/mediaQuery.dart';
+import 'package:hello_dish_app/utilities/shared_pref..dart';
+import 'package:hello_dish_app/utilities/utils.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../../../../utilities/app_color.dart';
@@ -41,6 +43,7 @@ class _ResturantDetailScreenState extends State<ResturantDetailScreen> {
       // "vegNonVeg": 0,
       "timing": 1,
     };
+    controller.getCurrentLoc(context);
     controller.getRestDetails(restaurantId: widget.restaurant.id, param: param);
   }
 
@@ -201,52 +204,67 @@ class _ResturantDetailScreenState extends State<ResturantDetailScreen> {
                         ).paddingSymmetric(horizontal: 12, vertical: 10),
                       ),
                       boxA3(),
-                      customDevider(),
-                      boxA3(),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        height: 60,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: controller.restaurantOffer?.length,
-                          itemBuilder: (context, index) {
-                            final item = controller.restaurantOffer?[index];
-                            return SizedBox(
-                              width: MediaQuery.of(context).size.width - 40,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CachedNetworkImage(
-                                    imageUrl: "${APIs.base}${item?.image}",
-                                    // 'assets/images/offer.png',
-                                    height: 60,
-                                    width: 70,
-                                  ),
-                                  boxB3(),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text('${item?.discount}₹  off',
-                                          style: GoogleFonts.poppins(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 16)),
-                                      Text(
-                                          'USE ${item?.offerCode} | ABOVE ₹ ${item?.above}',
-                                          style: GoogleFonts.poppins(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 12)),
-                                    ],
-                                  )
-                                ],
+                      controller.restaurantOffer!.isEmpty
+                          ? Container()
+                          : customDevider(),
+                      controller.restaurantOffer!.isEmpty
+                          ? Container()
+                          : boxA3(),
+                      controller.restaurantOffer!.isEmpty
+                          ? Container()
+                          : Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              height: 60,
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                itemCount: controller.restaurantOffer?.length,
+                                itemBuilder: (context, index) {
+                                  final item =
+                                      controller.restaurantOffer?[index];
+                                  return SizedBox(
+                                    width:
+                                        MediaQuery.of(context).size.width - 40,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        CachedNetworkImage(
+                                          imageUrl:
+                                              "${APIs.base}${item?.image}",
+                                          // 'assets/images/offer.png',
+                                          height: 60,
+                                          width: 70,
+                                        ),
+                                        boxB3(),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text('${item?.discount}₹  off',
+                                                style: GoogleFonts.poppins(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 16)),
+                                            Text(
+                                                'USE ${item?.offerCode} | ABOVE ₹ ${item?.above}',
+                                                style: GoogleFonts.poppins(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 12)),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
-                      ),
-                      boxA3(),
-                      customDevider(),
+                            ),
+                      controller.restaurantOffer!.isEmpty
+                          ? Container()
+                          : boxA3(),
+                      controller.restaurantOffer!.isEmpty
+                          ? Container()
+                          : customDevider(),
                       boxA3(),
                       TextField(
                         textInputAction: TextInputAction.search,
@@ -478,17 +496,22 @@ class _ResturantDetailScreenState extends State<ResturantDetailScreen> {
                             ],
                           );
                         },
-                      )
+                      ),
+                      boxA3(),
+                      boxA3(),
+                      boxA3(),
+                      boxA3(),
                     ],
                   ),
                   _cartItems.isNotEmpty
                       ? _viewCartWidget(
                           itemCount: _cartItems.length,
                           onTap: () {
-                            final orderPrice = _cartItems
-                                .map((e) => e.price)
-                                .reduce((value, element) => value + element);
+                            // final orderPrice = _cartItems
+                            //     .map((e) => e.price)
+                            //     .reduce((value, element) => value + element);
 
+                            int orderPrice = 0;
                             var orderItems = [{}];
 
                             for (var e in _cartItems) {
@@ -503,36 +526,48 @@ class _ResturantDetailScreenState extends State<ResturantDetailScreen> {
                                 "image": image,
                                 "price": price,
                               });
+                              orderPrice = orderPrice + (quantity * price);
                             }
+
+                            var selectedId = SharedPref.shared.pref!
+                                    .getString("primaryLocationId") ??
+                                "";
 
                             orderItems.removeWhere(
                                 (element) => element.keys.length <= 0);
 
                             print("orderItems: $orderItems");
 
-                            final params = {
-                              "paymentType": "cod", //prepayment
-                              "orderPrice": orderPrice,
-                              "orderItems": orderItems,
-                              "restaurantId": widget.restaurant.id,
-                              "customerLocationId": "65ce7574529c5188a259d544",
-                              "lat": 22.7533,
-                              "long": 75.8937,
-                              "status": 0,
-                              "offer": ""
-                            };
-
-                            controller.createOrder(
-                              params,
-                              (p0) {
-                                Get.to(() => const CartCompleteScreen(),
-                                    arguments: {
-                                      "items": _cartItems,
-                                      "restaurant": widget.restaurant,
-                                      "offer": controller.restaurantOffer
-                                    });
-                              },
-                            );
+                            if (selectedId == "") {
+                              Utils.showAlertDialog(
+                                  "Please add a primary location");
+                            } else {
+                              final params = {
+                                "paymentType": "cod", //prepayment
+                                "orderPrice": orderPrice,
+                                "orderItems": orderItems,
+                                "restaurantId": widget.restaurant.id,
+                                "customerLocationId": selectedId,
+                                "lat": double.parse(
+                                    controller.latitude.value.toString()),
+                                "long": double.parse(
+                                    controller.longitude.value.toString()),
+                                "status": 0,
+                                "offer": ""
+                              };
+                              print("orderItems: $params");
+                              controller.createOrder(
+                                params,
+                                (p0) {
+                                  Get.to(() => const CartCompleteScreen(),
+                                      arguments: {
+                                        "items": _cartItems,
+                                        "restaurant": widget.restaurant,
+                                        "offer": controller.restaurantOffer
+                                      });
+                                },
+                              );
+                            }
                           },
                         )
                       : const SizedBox.shrink()
